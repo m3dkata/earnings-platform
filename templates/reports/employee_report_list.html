@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load report_tags %}
+
+{% block content %}
+<div class="h-[95dvh] w-full p-2 flex flex-col overflow-hidden" x-data="{ showForm: false }">
+    <div class="flex justify-between items-center">
+        <input type="month"
+            value="{{ month_year }}"
+            onchange="window.location.href='?month_year=' + this.value"
+            class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 text-xs sm:text-sm border-slate-300 p-1.5 sm:p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white">        
+        
+        <a href="{% url 'report-create' %}"
+           class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-[10px] sm:text-xs px-3 sm:px-5 py-1.5 sm:py-2 text-center me-2">
+            <i class="fa-solid fa-plus"></i> Report
+        </a>
+    </div>
+    <div class="grid grid-cols-7 gap-1 py-1">
+        <!-- Week day headers in a separate grid row -->
+        <div class="text-center font-medium text-[10px] sm:text-base">Mon</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Tue</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Wed</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Thu</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Fri</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Sat</div>
+        <div class="text-center font-medium text-[10px] sm:text-base">Sun</div>
+    </div>    
+    <div class="grid grid-cols-7 gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg shadow-2xl flex-1">
+        <!-- Calendar days in a separate grid -->
+            {% for week in calendar_dates %}
+                {% for day in week %}
+                <div class="w-full h-full p-0.5 rounded-lg bg-white dark:bg-slate-700 shadow flex flex-col">
+                    {% if day != 0 %}
+                        {% with report=employee_reports|get_item:day %}
+                            <div class="text-xl sm:text-2xl font-bold text-center
+                                {% if report.status == 'APPROVED' %}text-green-600 dark:text-green-400
+                                {% elif report.status == 'REJECTED' %}text-red-600 dark:text-red-400
+                                {% elif report.status == 'DRAFT' %}text-slate-600 dark:text-slate-400
+                                {% elif report.status == 'SUBMITTED' %}text-yellow-600 dark:text-yellow-400
+                                {% else %}text-slate-900 dark:text-white{% endif %}">
+                                {{ day }}
+                            </div>
+                            <div class="flex-grow flex flex-col justify-center">
+                                {% if report %}
+                                    <a href="{% url 'report-update' report.id %}" class="text-center">
+                                        <div class="px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-[6px] sm:text-xs
+                                            {% if report.status == 'APPROVED' %}bg-green-100 text-green-800
+                                            {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800
+                                            {% elif report.status == 'DRAFT' %}bg-slate-200 text-slate-800
+                                            {% elif report.status == 'SUBMITTED' %}bg-yellow-100 text-yellow-800
+                                            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                            {{ report.status }}
+                                        </div>
+                                        <div class="mt-0.5 sm:mt-1 text-[10px] sm:text-sm">{{ report.total_percent }}%</div>
+                                        <div class="text-[10px] sm:text-sm">{{ report.total_sum }}</div>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'report-create' %}?date={{ month_year }}-{% if day < 10 %}0{% endif %}{{ day }}"
+                                    class="block text-center text-purple-600 hover:text-purple-800 text-[10px] sm:text-sm hover:underline uppercase">
+                                        <i class="fa-solid fa-plus"></i> Add
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endwith %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% endfor %}
+    </div>    
+</div>
+{% endblock %}

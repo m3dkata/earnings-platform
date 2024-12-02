@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Payroll {{ payroll.employee }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 1cm;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .left-group {
+            display: inline-block;
+        }
+        .top-header{
+            margin: 0.5rem;
+            padding: 0.5rem 0.5rem;
+            text-align: center;
+        }
+        .payslip-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .confidential {
+            color: red;
+            font-weight: bold;
+            padding: 5px;
+        }
+        .logo {
+            width: 100px;
+        }
+        .header {
+            border: 2px solid #000;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .company-info {
+            text-align: center;
+        }
+        .employee-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background: #f0f0f0;
+        }
+        .totals {
+            border: 2px solid #000;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-line {
+            width: 200px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <div class="top-header">
+            <div class="payslip-text">PAYSLIP</div>
+            <div class="confidential">CONFIDENTIAL</div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="company-info">
+            <strong>EARNINGS Platform</strong><br>
+            Pay Period: {{ payroll.month|date:"F Y" }}<br>
+            Statement #{{ payroll.pk }}
+        </div>
+    </div>
+
+    <div class="employee-info">
+        <table>
+            <tr>
+                <td><strong>Employee Name:</strong></td>
+                <td>{{ payroll.employee.user.get_full_name }}</td>
+                <td><strong>Employee ID:</strong></td>
+                <td>{{ payroll.employee.number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Position:</strong></td>
+                <td>{{ payroll.employee.position }}</td>
+                <td><strong>Workshop:</strong></td>
+                <td>{{ payroll.employee.workshop.name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Work Days</strong></td>
+                <td>{{ payroll.work_days }}</td>
+                <td><strong>Avg. Percent</strong></td>
+                <td>{{ payroll.percent }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <table>
+        <tr>
+            <th colspan="2">EARNINGS</th>
+            <th colspan="2">DEDUCTIONS</th>
+        </tr>
+        <tr>
+            <td>Base Earnings</td>
+            <td>${{ payroll.earnings }}</td>
+            <td>Sick Leave ({{ payroll.sick_days }} days)</td>
+            <td>${{ payroll.sick_amount }}</td>
+        </tr>
+        <tr>
+            <td>Attendance Bonus</td>
+            <td>${{ payroll.attendance_bonus }}</td>
+            <td>Vacation ({{ payroll.vacation_days }} days)</td>
+            <td>${{ payroll.vacation_amount }}</td>
+        </tr>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <th>Payment Method</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Bank Transfer</td>
+                <td>${{ payroll.bank_transfer }}</td>
+            </tr>
+            <tr>
+                <td>Cash Payment</td>
+                <td>${{ payroll.cash_payment }}</td>
+            </tr>
+            <tr>
+                <td><strong>TOTAL COMPENSATION</strong></td>
+                <td><strong>${{ payroll.total }}</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">Employee Signature</div>
+        <div class="signature-line">Authorized Signature</div>
+        <div class="signature-line">Date: {% now "d/m/Y" %}</div>
+    </div>
+</body>
+</html>

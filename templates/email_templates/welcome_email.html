@@ -1,0 +1,15 @@
+{% extends "email_templates/email_base.html" %}
+{% block content %}
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+    <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h1 style="color: #333; text-align: center;">Welcome to Our Platform!</h1>
+        <div style="text-align: center; padding: 20px;">
+            <p style="font-size: 16px; color: #666;">Hello {{ user.get_full_name }},</p>
+            <p style="color: #666;">Thank you for joining us. Your account has been created successfully.<br>You need to wait Admin approval of your account before login!</p>
+            <div style="margin: 20px 0;">
+                <a href="{{ PROTOCOL }}://{{ DOMAIN }}{{ login_url }}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Login to Your Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

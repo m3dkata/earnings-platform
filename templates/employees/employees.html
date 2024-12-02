@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <!-- Search Field -->
+    <div class="mb-6 max-w-md mx-auto">
+        <input 
+            type="text" 
+            id="searchField"
+            placeholder="Search employees..."
+            class="w-full rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"
+        >
+    </div>
+
+    <section class="mb-12">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {% for employee in employees %}
+            <div class="employee-card relative group bg-slate-50 dark:bg-slate-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+                data-name="{% if employee.user %}{{ employee.user.get_full_name|lower }}{% else %}{{ employee.get_full_name|lower }}{% endif %}"
+                data-position="{% if employee.position %}{{ employee.position|lower }}{% endif %}"
+                data-workshop="{% if employee.workshop %}{{ employee.workshop|lower }}{% endif %}"
+                data-id="{% if employee.number %}{{ employee.number }}{% endif %}"
+            >
+                <!-- Image section -->
+                <div class="relative w-40 h-40 mx-auto rounded-full mt-2 overflow-hidden">
+                    {% if employee.user.profile_image %}
+                        <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-full h-full object-cover">
+                    {% elif employee.profile_image %}
+                        <img src="{{ employee.profile_image.url }}" alt="{{ employee.get_full_name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-slate-200 flex items-center justify-center">
+                            <span class="text-gray-400">No Image</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Employee details -->
+                <div class="text-center p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+                        {% if employee.user %}{{ employee.user.get_full_name }}{% else %}{{ employee.get_full_name }}{% endif %}
+                    </h3>
+                    {% if employee.number %}
+                        <span class="text-sm text-gray-500 dark:text-gray-300">ID:{{ employee.number }}</span>
+                        <p class="text-gray-600 dark:text-gray-300">{{ employee.position }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-300">{{ employee.workshop }}</p>
+                    {% endif %}
+                    <span class="px-2 py-1 rounded-full text-sm {{ status_class }}">{{ status }}</span>
+                </div> 
+
+                <!-- Hidden buttons -->
+                {% if status == 'Inactive' %}
+                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-full bg-purple-500 transition-all duration-300">
+                    <button type="button" 
+                            onclick="showActivateModal({{ employee.id }})" 
+                            class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                        Activate
+                    </button>
+                </div>
+                {% elif status == 'Active' %}
+                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-purple-500 transition-all duration-300">
+                    <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="deactivate">
+                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                            Deactivate
+                        </button>
+                    </form>
+                </div>
+                <div class="absolute inset-y-0 right-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-red-500 transition-all duration-300">
+                    <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="archive">
+                        <button type="submit" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                            Archive
+                        </button>
+                    </form>
+                </div>
+                <div class="absolute inset-x-0 bottom-0 hidden group-hover:flex justify-center p-4 z-10">
+                    <a href="{% url 'employee_stats' %}?employee={{ employee.pk }}" 
+                       class="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center">
+                        View Stats
+                    </a>
+                </div>
+                {% elif status == 'Archived' %}
+                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-purple-500 transition-all duration-300">
+                    <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="unarchive">
+                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                            Unarchive
+                        </button>
+                    </form>
+                </div>
+                <div class="absolute inset-y-0 right-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-red-500 transition-all duration-300">
+                    <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <button type="submit" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                {% endif %}               
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+<div id="modalContainer"></div>
+<script>
+    document.getElementById('searchField').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.employee-card');
+        
+        cards.forEach(card => {
+            const name = card.dataset.name;
+            const position = card.dataset.position;
+            const workshop = card.dataset.workshop;
+            const id = card.dataset.id;
+            
+            const matches = 
+                name.includes(searchTerm) || 
+                position.includes(searchTerm) || 
+                workshop.includes(searchTerm) || 
+                id.includes(searchTerm);
+            
+            card.style.display = matches ? 'block' : 'none';
+        });
+    });
+
+    function showActivateModal(userId) {
+        fetch(`/employees/toggle-status/${userId}/`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                document.getElementById('activateModal').classList.remove('hidden');
+            });
+    }
+</script>
+{% endblock %}

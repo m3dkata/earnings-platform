@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-md w-full px-6 py-8 bg-white shadow-lg rounded-lg">
+        <div class="text-center">
+            <h1 class="text-9xl font-bold text-gray-800">500</h1>
+            <h2 class="mt-4 text-3xl font-semibold text-gray-600">Server Error</h2>
+            <p class="mt-4 text-gray-500">Something went wrong on our end. We're working to fix it.</p>
+            <a href="{% url 'home' %}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
+                Return Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
