@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <form method="post" class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
+        {% csrf_token %}
+        <div class="flex justify-center">
+            <div class="px-2 py-1 rounded-full 
+                {% if report.status == 'APPROVED' %}bg-green-100 text-green-800
+                {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800
+                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                {{ report.status }}
+            </div>
+        </div> 
+        <!-- Employee Info -->
+        <div class="mb-6">
+            <div class="flex justify-center">
+                <div class="px-2 py-1 rounded-full text-slate-500 dark:text-slate-400">
+                    Employee Info
+                </div>
+            </div> 
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div>
+                    <label class="block text-xs font-medium">ID</label>
+                    <div class="mt-1">{{ employee.number }}</div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium">Name</label>
+                    <div class="mt-1">{{ employee.user.get_full_name }}</div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium">Position</label>
+                    <div class="mt-1">{{ employee.position }}</div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium">Workshop</label>
+                    <div class="mt-1">{{ employee.workshop }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Details -->
+        <div class="flex justify-center">
+            <div class="px-2 py-1 rounded-full text-slate-500 dark:text-slate-400">
+                Report for {{ report.date }}
+            </div>
+        </div> 
+
+        <!-- Operations Table -->
+        <div class="overflow-x-auto mb-6">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600 text-sm sm:text-base">
+                <thead>
+                    <tr>
+                        <th class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Operation</th>
+                        <th class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Quantity</th>
+                        <th class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Percent</th>
+                        <th class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                    {% for operation in operations %}
+                    <tr>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ operation.operation.code }} - {{ operation.operation.name }}</td>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ operation.quantity }}</td>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ operation.percent }}%</td>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ operation.sum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold">
+                        <td class="px-3 py-2 sm:px-6 sm:py-4" colspan="2">Total:</td>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ total_percent }}%</td>
+                        <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ total_sum }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>        
+        
+        <!-- Action Buttons -->
+         {% if report.status == 'SUBMITTED' or report.status == 'REJECTED' %}
+            <div class="flex justify-center space-x-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="approve" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                        Approve
+                    </button>
+                    <button type="submit" name="reject" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                        Reject
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

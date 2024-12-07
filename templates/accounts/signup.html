@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white p-8" x-data="imageUpload()">
+    <div class="flex justify-center mb-6">
+        <div class="relative group">
+            <div @click="$refs.fileInput.click()" class="w-24 h-24 rounded-full bg-purple-500 hover:bg-purple-700 flex items-center justify-center cursor-pointer overflow-hidden object-cover">
+                <template x-if="!imageUrl">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </template>
+                <template x-if="imageUrl">
+                    <img :src="imageUrl" class="max-w-md object-cover">
+                </template>
+            </div>
+            <input type="file" 
+                   name="profile_image" 
+                   x-ref="fileInput" 
+                   @change="fileChosen" 
+                   class="hidden" 
+                   accept="image/*">
+            <div class="absolute bottom-0 right-0 bg-slate-100 rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-user w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.username|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.username.errors }}</span>
+            </div>
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-envelope w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.email|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.email.errors }}</span>
+            </div>
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-user w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.first_name|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.first_name.errors }}</span>
+            </div>
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-user w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.last_name|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.last_name.errors }}</span>
+            </div>
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-lock w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.password1|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.password1.errors }}</span>
+            </div>
+            <div>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-slate-900 bg-slate-200 border rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
+                        <i class="fa-solid fa-lock w-4 h-4 text-slate-500 dark:text-slate-400"></i>
+                    </span>
+                    {{ form.password2|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+                </div>
+                <span class="text-red-500 text-sm block mt-1 text-center">{{ form.password2.errors }}</span>
+            </div>
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="text-red-500 text-sm text-center">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {% include 'partials/buttons/primary_button.html' with text="Sign Up" icon="" type="submit" %}
+    </form>
+</div>
+
+<script>
+function imageUpload() {
+    return {
+        imageUrl: null,
+        fileChosen(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.imageUrl = URL.createObjectURL(file);
+            }
+        }
+    }
+}
+</script>
+{% endblock %}

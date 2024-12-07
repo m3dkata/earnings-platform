@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <div class="flex justify-end mb-4">
+        <a href="{% url 'rate_create' %}" 
+           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2.5 text-center">
+            <i class="fa-solid fa-plus"></i> Rate
+        </a>
+    </div>
+
+    {% if rates %}
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 shadow-2xl rounded-lg overflow-hidden">
+            <thead class="bg-slate-50 dark:bg-slate-800">
+                <tr>
+                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</th>
+                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Value</th>
+                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Operations</th>
+                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                {% for rate in rates %}
+                {% include 'operations/partials/rate_row.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<div id="operation-{{ operation.pk }}" class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl p-4 hover:shadow-2xl transition-shadow">
+    <div class="flex justify-between items-start mb-4">
+        <span class="text-lg font-semibold text-slate-800 dark:text-white">{{ operation.code }}</span>
+        <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+            {{ operation.category }}
+        </span>
+    </div>
+    
+    <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-3">{{ operation.name }}</h3>
+    
+    <div class="space-y-2 mb-4">
+        <div class="flex justify-between">
+            <span class="text-slate-600 dark:text-slate-400">Time:</span>
+            <span class="font-medium text-slate-800 dark:text-white">{{ operation.time }}</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-slate-600 dark:text-slate-400">Price:</span>
+            <span class="font-medium text-slate-800 dark:text-white">{{ operation.price }}</span>
+        </div>
+    </div>
+    
+    <div class="flex justify-end space-x-2">
+        <button hx-get="{% url 'operation_edit' operation.pk %}"
+                hx-target="#operation-form"
+                hx-swap="innerHTML"
+                @click="showForm = true"
+                class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+                <i class="fa-solid fa-pencil"></i>
+        </button>
+        <button hx-get="{% url 'operation_delete' operation.pk %}"
+                hx-target="#modal-content"
+                hx-swap="innerHTML"
+                @click="document.getElementById('modal').classList.remove('hidden')"
+                class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+                <i class="fa-solid fa-trash-can"></i>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-6 text-center">
+            {% if object %}Edit{% else %}Create{% endif %} Payroll
+        </h2>
+        {% if object %}
+        <div class="mb-6 grid grid-cols-1 gap-4 text-center">
+            <div>
+                <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Employee</label>
+                <p class="text-xl font-bold text-gray-800 dark:text-white">{{ object.employee }}</p>
+                <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Month</label>
+                <p class="text-l text-gray-800 dark:text-white">{{ object.month|date:"F Y" }}</p>
+                <hr class="border-t border-slate-200 my-2">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Work days</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.work_days }}</p>    
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Percent</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.percent }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Earnings</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.earnings }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Attendance bonus</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.attendance_bonus }}</p>    
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Vacations days</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.vacation_amount }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Sick days</label>
+                        <p class="text-l text-gray-800 dark:text-white">{{ object.sick_amount }}</p>    
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for field in form %}
+                <div class="form-group">
+                    <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <span class="text-red-500 text-sm">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mb-6 grid grid-cols-1 gap-4 text-center">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Cash payment</label>
+                    <p class="text-l text-gray-800 dark:text-white">{{ object.cash_payment }}</p>    
+                </div>
+            </div>
+            <div class="flex justify-center space-x-4 mt-6">
+                <a href="{% url 'payroll-list' %}" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Cancel</a>
+                <button type="submit" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

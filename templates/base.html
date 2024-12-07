@@ -1,0 +1,84 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Earnings{% endblock %}</title>
+    {% load static %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <link rel="stylesheet" href="https://api.fontshare.com/css?f[]=satoshi@400,700&f[]=plus-jakarta-sans@400,600&f[]=space-grotesk@400&display=swap">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="{% static 'js/alpine.min.js' %}"></script>
+    <script defer src="{% static 'js/htmx.min.js' %}"></script>
+    <script src="{% static 'js/apexcharts.js' %}"></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+</head>
+<body class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white"
+      x-data="{ 
+          sidebarOpen: false,
+          store: {
+              isPinned: localStorage.getItem('sidebarPinned') === 'true'
+          }
+      }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <div class="fixed top-0 w-full z-50">
+        {% include 'partials/navbar.html' %}
+    </div>
+    <div class="flex min-h-screen bg-slate-100 dark:bg-slate-800">
+        <div x-show="sidebarOpen" 
+             @click="sidebarOpen = false"
+             class="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40 transition-opacity"
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
+        </div>
+        {% include 'partials/sidebar.html' %}
+        <main class="flex-1 p-0 md:p-0 mt-12 transition-all duration-300"
+            :class="{'lg:ml-48': store.isPinned, 'lg:ml-14': !store.isPinned}">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% if request.user.is_authenticated and request.user.is_employee and not has_today_report %}
+    <div class="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-auto z-50 bg-red-100 dark:bg-red-900 p-2 shadow-lg flex items-center justify-between md:rounded-lg">
+        <div>
+            <p class="text-red-700 dark:text-red-300 font-medium text-xs">You do not have Report for today</p>
+        </div>
+        <a href="{% url 'report-create' %}?date={% now 'Y-m-d' %}"  
+        class="ml-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+            Add
+        </a>
+    </div>
+    {% endif %}
+
+    {% include 'partials/alerts.html' %}
+    {% if request.user.is_authenticated and request.user.is_staff %}
+        {% include 'partials/ai.html' %}
+    {% endif %}  
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script> 
+    {% if request.user.is_authenticated and request.user.is_staff %}
+    <script src="{% static 'js/plotly.min.js' %}"></script>
+    <script src="{% static 'js/ai.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'js/select2.min.js' %}"></script>
+    <script src="{% static 'js/modal.js' %}"></script>
+    {% if request.user.is_authenticated %}
+    <script src="{% static 'js/notifications.js' %}"></script>
+    {% endif %}
+</body>
+</html>

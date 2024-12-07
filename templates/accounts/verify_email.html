@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto p-8 text-center">
+    <h2 class="text-2xl font-bold mb-6 text-slate-800 dark:text-white">Verify Your Email</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block">Enter verification code sent to your email</label>
+            <input type="text" name="otp" required class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+            {% if form.otp.errors %}
+                {% for error in form.otp.errors %}
+                    <span class="text-red-500 text-sm block mt-1">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% include 'partials/buttons/primary_button.html' with text="Verify email" icon="fa-solid fa-envelope" type="submit" %}
+    </form>
+</div>
+{% endblock %}

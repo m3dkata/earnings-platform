@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        {% if request.user.is_staff %}
+        <!-- Combined Filters Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <form method="get" class="h-full flex flex-col gap-2">
+                <select name="employee" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+                    {% for emp in employees %}
+                        <option value="{{ emp.id }}" {% if emp.id == selected_employee.id %}selected{% endif %}>
+                            {{ emp.user.get_full_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <select name="period" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+                    <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 Days</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 Days</option>
+                    <option value="year" {% if period == 'year' %}selected{% endif %}>Last Year</option>
+                </select>
+            </form>
+        </div>
+        {% else %}
+        <!-- Period Filter Only -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <form method="get" class="h-full flex items-center">
+                <select name="period" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+                    <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 Days</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 Days</option>
+                    <option value="year" {% if period == 'year' %}selected{% endif %}>Last Year</option>
+                </select>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Total Operations Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Executed Operations</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations }}</h3>
+                </div>
+                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                    <i class="fa-solid fa-clipboard-list text-purple-500 dark:text-purple-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Reports Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Total Reports</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_reports }}</h3>
+                </div>
+                <div class="p-2 bg-lime-100 dark:bg-lime-900 rounded-lg">
+                    <i class="fa-solid fa-file-lines text-lime-500 dark:text-lime-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 mb-4">
+        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Operations Over Time</h3>
+        <div id="operations-chart" class="h-80 w-full"></div>
+    </div>
+
+    <!-- Operations Table -->
+    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 mb-4">
+        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">All Operations</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead>
+                    <tr>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Code</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Name</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Q-ty</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Percent</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Sum</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                    {% for operation in operations %}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-600">
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ operation.operation.code }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ operation.operation.name }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ operation.quantity }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ operation.percent }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ operation.sum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reports Table -->
+    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">All Reports</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead>
+                    <tr>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">#</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Date</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Status</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Percent</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Sum</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                    {% for report in reports %}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-600">
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white"><a href="{% url 'report-update' report.pk %}" class="hover:underline hover:text-purple-500">{{ report.pk }}</a></td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.date|date:"d-m-Y" }}</td>
+                        <td class="px-1 py-1">
+                            <span class="inline-flex items-start rounded-full px-2.5 py-0.5 text-xs font-medium 
+                                {% if report.status == 'APPROVED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
+                                {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300{% endif %}">
+                                {{ report.status }}
+                            </span>
+                        </td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.total_percent }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.total_sum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chartData = {{ chart_data|safe }};
+</script>
+<script src="{% static 'js/employee_stats.js' %}"></script>
+{% endblock %}

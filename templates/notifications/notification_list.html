@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-4">
+    <div class="bg-white dark:bg-slate-700 rounded-lg shadow-lg p-2">
+        <h1 class="text-2xl font-bold mb-6">Notifications</h1>
+
+        <!-- Enhanced Filters -->
+        <div class="mb-6">
+            <form method="get" class="flex flex-wrap gap-4">
+                <!-- Date Filter -->
+                <div class="flex items-center gap-2">
+                    <input type="date" name="date_from" 
+                           value="{{ request.GET.date_from }}"
+                           class="rounded-lg border-gray-300 dark:bg-slate-800">
+                    <span>to</span>
+                    <input type="date" name="date_to"
+                           value="{{ request.GET.date_to }}"
+                           class="rounded-lg border-gray-300 dark:bg-slate-800">
+                </div>
+
+                <!-- Type Filter -->
+                <!-- <select name="type" class="rounded-lg border-gray-300 dark:bg-slate-800">
+                    <option value="">All Types</option>
+                    {% for type in notification_types %}
+                    <option value="{{ type }}" {% if request.GET.type == type %}selected{% endif %}>
+                        {{ type|title }}
+                    </option>
+                    {% endfor %}
+                </select> -->
+
+                <!-- Read/Unread Filter -->
+                <select name="read_status" class="rounded-lg border-gray-300 dark:bg-slate-800">
+                    <option value="">All Status</option>
+                    <option value="read" {% if request.GET.read_status == 'read' %}selected{% endif %}>Read</option>
+                    <option value="unread" {% if request.GET.read_status == 'unread' %}selected{% endif %}>Unread</option>
+                </select>
+
+                <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center me-2">
+                    Apply Filters
+                </button>
+                
+                <a href="{% url 'notification_list' %}" class="text-slate-800 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:underline py-2">
+                    Clear Filters
+                </a>
+            </form>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            {% for notification in notifications %}
+            <div data-notification-type="{{ notification.notification_type }}"
+                data-notification-id="{{ notification.pk }}"
+                {% if notification.notification_type == 'report_status' or notification.notification_type == 'report_submission' %}
+                data-url="{% url 'report-update' notification.report.pk %}"
+                {% else %}
+                data-url="{% url 'inactive_employees' %}"
+                {% endif %}
+                data-is-read="{{ notification.is_read|yesno:'true,false' }}"
+                class="notification-list-item p-4 {% if notification.is_read %}bg-slate-100 dark:bg-slate-800{% else %}bg-purple-200 dark:bg-purple-900{% endif %} rounded-lg hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm">{{ notification.message }}</p>
+                        <small class="text-slate-500">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-slate-500 col-span-full">No notifications found</p>
+            {% endfor %}
+        </div>
+ 
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-6 flex justify-center">
+            <nav class="flex space-x-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-600">Previous</a>
+                {% endif %}
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-600">Next</a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = document.querySelectorAll('.notification-list-item');
+        
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                const url = item.dataset.url;
+                const isRead = item.dataset.isRead === 'true';
+                const notificationId = item.dataset.notificationId;
+                
+                if (!isRead) {
+                    fetch(`/notifications/${notificationId}/read/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        }
+                    }).then(() => {
+                        window.location.href = url;
+                    });
+                } else {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}

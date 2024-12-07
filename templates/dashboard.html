@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <!-- Total Operations Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Total Operations</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations|floatformat:0 }}</h3>
+                </div>
+                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                    <i class="fa-solid fa-clipboard-list text-purple-500 dark:text-purple-300"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-xs {% if operations_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                <i class="fa-solid fa-arrow-{% if operations_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ operations_change|floatformat:0 }} from last month
+            </div>
+        </div>
+
+        <!-- Earnings Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Total Earnings</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">${{ total_earnings|floatformat:2 }}</h3>
+                </div>
+                <div class="p-2 bg-lime-100 dark:bg-lime-900 rounded-lg">
+                    <i class="fa-solid fa-dollar-sign text-lime-500 dark:text-lime-300"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-xs {% if earnings_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                <i class="fa-solid fa-arrow-{% if earnings_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ earnings_change|floatformat:2 }} from last month
+            </div>
+        </div>
+
+        <!-- Work Days Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Work Days</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ work_days }}</h3>
+                </div>
+                <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <i class="fa-solid fa-calendar text-blue-500 dark:text-blue-300"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-xs {% if work_days_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                <i class="fa-solid fa-arrow-{% if work_days_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ work_days_change|floatformat:0 }} from last month
+            </div>
+        </div>
+
+        <!-- Average Percent Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Average Percent</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ avg_percent|floatformat:1 }}%</h3>
+                </div>
+                <div class="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                    <i class="fa-solid fa-percent text-orange-500 dark:text-orange-300"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-xs {% if percent_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                <i class="fa-solid fa-arrow-{% if percent_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ percent_change|floatformat:1 }}% from last month
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 overflow-hidden">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Earnings</h3>
+            <div id="earningsChart" class="h-80 w-full"></div>
+        </div>
+    
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 overflow-hidden">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Performance</h3>
+            <div id="performanceChart" class="h-80 w-full"></div>
+        </div>
+    </div>
+
+    <!-- Recent Reports Table -->
+    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-white">Recent Reports</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead>
+                    <tr>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">#</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employee</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Date</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Status</th>
+                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                    {% for report in recent_reports %}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700">
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.pk }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.employee }}</td>
+                        <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.date|date:"d-m-Y" }}</td>
+                        <td class="px-1 py-1">
+                            <span class="inline-flex items-start rounded-full px-2.5 py-0.5 text-xs font-medium 
+                                {% if report.status == 'APPROVED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
+                                {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
+                                {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300{% endif %}">
+                                {{ report.status }}
+                            </span>
+                        </td>
+                        <td class="">
+                            <a href="{% url 'report-update' report.id %}" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-2 py-1 text-center me-2"><i class="fa-regular fa-eye"></i></a>
+                        </td>
+                        {% empty %}
+                        <td colspan="5" class="text-center text-gray-500">No reports found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    const chartData = {{ chart_data|safe }};
+</script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

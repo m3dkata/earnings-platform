@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto" x-data="{ showForm: false }">
+    <div class="flex justify-between items-center">
+        <input type="date" 
+            value="{{ selected_date|date:'Y-m-d' }}" 
+            onchange="window.location.href='?date=' + this.value"
+            class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 text-sm border-slate-300 p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+        
+        <a href="{% url 'report-create' %}"
+                class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+            <i class="fa-solid fa-plus"></i> Report
+        </a>
+    </div>
+
+    <div class="mt-6">
+        <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
+            <h2 class="text-l font-bold mb-4">Reports - {{ selected_date|date:"d M Y" }}</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
+                    <thead>
+                        <tr>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">%</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                        {% for report in reports %}
+                            {% if report.status == 'SUBMITTED' or report.status == 'REJECTED' or report.status == 'APPROVED' %}
+                            <tr>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.employee }}</td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
+                                    <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        {% if report.status == 'APPROVED' %}bg-green-100 text-green-800
+                                        {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800
+                                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                        {{ report.status }}
+                                    </span>
+                                </td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_percent }}%</td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_sum }}</td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
+                                    <a href="{% url 'report-update' report.pk %}" 
+                                    class="text-purple-600 hover:text-purple-900 hover:underline uppercase">Review</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-2 py-4 sm:px-6 sm:py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                                    No reports found
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4 mt-4">
+        <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
+            <h2 class="text-l font-bold mb-4">Missing Reports - {{ selected_date|date:"d M Y" }}</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
+                    <thead>
+                        <tr>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                        {% for employee in employees_without_reports %}
+                        <tr>
+                            <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ employee }}</td>
+                            <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
+                                <a href="{% url 'report-create' %}?employee={{ employee.pk }}&date={{ selected_date|date:'Y-m-d' }}"
+                                   class="text-purple-600 hover:text-purple-900 hover:underline uppercase"><i class="fa-solid fa-plus"></i> Report</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="px-2 py-4 sm:px-6 sm:py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                                    All employees have reports for this date.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
+            <h2 class="text-l font-bold mb-4">Draft Reports - {{ selected_date|date:"d M Y" }}</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
+                    <thead>
+                        <tr>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">%</th>
+                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                        {% for report in reports %}
+                            {% if report.status == 'DRAFT'%}
+                            <tr>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.employee }}</td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_percent }}%</td>
+                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_sum }}</td>
+                            </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="px-2 py-4 sm:px-6 sm:py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                                    No DRAFT reports found
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

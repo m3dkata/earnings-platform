@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Face Verification{% endblock %}
+{% block content %}
+<div class="min-h-full p-2">
+    <div class="rounded-lg bg-slate-100 dark:bg-slate-700 shadow-xl p-4 max-w-7xl mx-auto">
+        <div class="relative w-full aspect-video rounded-lg overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/80" id="loading-overlay">
+                <div class="text-white text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+                    <p>Loading camera...</p>
+                </div>
+            </div>
+            <!-- Face Cutout Overlay -->
+            <div class="absolute inset-0 z-5">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full border-2 border-white bg-transparent ring-4 ring-purple-500/50">
+                    <!-- Guide marks -->
+                    <div class="absolute inset-0 border-4 border-transparent border-dashed"></div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-4 left-0 right-0 text-center z-10">
+                <a href="{% url 'login' %}" class="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Login
+                </a>
+            </div>
+            <video id="video" class="w-full h-full object-cover" autoplay muted playsinline></video>
+            <div id="message-overlay" class="absolute top-4 left-0 right-0 flex items-center justify-center text-center p-4 z-10">
+                <span class="bg-slate-900/90 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-lg"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/face-api.js' %}"></script>
+<script>
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const video = document.getElementById('video');
+    const messageOverlay = document.getElementById('message-overlay').querySelector('span');
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('/static/models'),
+            faceapi.nets.faceLandmark68Net.loadFromUri('/static/models'),
+            faceapi.nets.faceRecognitionNet.loadFromUri('/static/models')
+        ]);
+        
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            });
+            video.srcObject = stream;
+            video.addEventListener('playing', () => {
+                loadingOverlay.classList.add('hidden');
+                messageOverlay.textContent = 'Position your face in the circle';
+            });
+        } catch (err) {
+            console.error('Error accessing webcam:', err);
+            messageOverlay.textContent = 'Error accessing webcam. Please ensure camera permissions are granted.';
+        }
+    });
+
+    video.addEventListener('play', () => {
+        setInterval(async () => {
+            try {
+                messageOverlay.textContent = 'Detecting face...';
+                const detection = await faceapi.detectSingleFace(video, 
+                    new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detection) {
+                    messageOverlay.textContent = 'Verifying identity...';
+                    const response = await fetch('{% url "verify_face_login" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            descriptor: Array.from(detection.descriptor)
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        messageOverlay.textContent = 'Welcome back!';
+                        window.location.href = data.redirect_url;
+                    }
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}
