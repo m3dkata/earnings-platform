@@ -27,6 +27,12 @@
             </tbody>
         </table>
     </div>
-    {% endif %}
+    {% else %}  
+        <div class="col-span-full text-center py-12">
+            <div class="p-8">
+                <p class="text-xl text-slate-600 dark:text-slate-300">No rates are created yet</p>
+            </div>
+        </div>
+    {% endif %}  
 </div>
 {% endblock %}

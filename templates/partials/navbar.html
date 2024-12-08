@@ -53,6 +53,7 @@
                 {% endif %}
                 <button
                     x-data="{ theme: localStorage.getItem('theme') || 'light' }"
+                    x-cloak
                     @click="
                         theme = theme === 'light' ? 'dark' : 'light';
                         localStorage.setItem('theme', theme);
@@ -88,6 +89,7 @@
                         </button>
                         
                         <div x-show="open" 
+                             x-cloak
                              @click.away="open = false"
                              class="absolute right-0 mt-2 w-48 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 shadow-2xl py-2 transition duration-200 ease-in-out"
                              x-transition:enter="transition ease-out duration-100"

@@ -18,9 +18,3 @@ class BaseTemplateView(TemplateView):
                         })
             context['models_data'] = models_data
         return context
-
-def home(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    messages.info(request, "Please login to continue")
-    return redirect('login')

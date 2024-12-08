@@ -1,7 +1,15 @@
 from django import forms
-from .models import Employee
+from django.core.exceptions import ValidationError
+from .models import Employee, Workshop
 
 class EmployeeActivationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not Workshop.objects.exists():
+            for choice in Workshop.WORKSHOP_CHOICES:
+                Workshop.objects.create(name=choice[0])
+        
+        self.fields['workshop'].queryset = Workshop.objects.all()
     class Meta:
         model = Employee
         fields = ['number', 'position', 'workshop']
