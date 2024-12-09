@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -6,9 +7,8 @@ import vanna
 from vanna.remote import VannaDefault
 import pandas as pd
 from django.contrib.auth.decorators import user_passes_test
-
-def is_staff_user(user):
-    return user.is_staff
+from django.core.cache import cache
+import json
 
 api_key = os.environ.get('VANNA_API_KEY')
 vanna_model_name = os.environ.get('VANNA_MODEL_NAME')
@@ -19,12 +19,49 @@ vanna_ai.connect_to_postgres(host=os.environ.get('DB_HOST'),
                        password=os.environ.get('DB_PASSWORD'),
                        port=os.environ.get('DB_PORT'))
 
+def is_staff_user(user):
+    return user.is_staff
+
+def get_cache_key(user_id):
+    return f"ai_chat_{user_id}"
+
+def cache_chat_message(user_id, message, is_user=False):
+    cache_key = f"ai_chat_{user_id}"
+    current_chat = cache.get(cache_key) or []
+    
+    if isinstance(message, dict):
+        content = {
+            'data': message.get('data'),
+            'columns': message.get('columns'),
+            'visualization': message.get('visualization'),
+            'follow_up_questions': message.get('follow_up_questions')
+        }
+    else:
+        content = message
+        
+    current_chat.append({
+        'content': content,
+        'is_user': is_user,
+        'timestamp': datetime.now().isoformat()
+    })
+    cache.set(cache_key, current_chat, timeout=86400)
+
 @login_required
 @user_passes_test(is_staff_user)
 def ai_query(request):
     query = request.GET.get('query', '').lower()
     response = process_query(query)
+    
+    cache_chat_message(request.user.id, query, is_user=True)
+    cache_chat_message(request.user.id, response)
+    
     return JsonResponse(response)
+
+@login_required
+def get_chat_history(request):
+    cache_key = f"ai_chat_{request.user.id}"
+    chat_history = cache.get(cache_key) or []
+    return JsonResponse({'history': chat_history})
 
 def process_query(query):
     try:

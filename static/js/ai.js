@@ -12,43 +12,71 @@ document.addEventListener('DOMContentLoaded', function() {
     recognition.continuous = false;
     recognition.interimResults = false;
 
+    function loadChatHistory() {
+        return fetch('/ai/history/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                chatMessages.innerHTML = '';
+                if (data.history) {
+                    data.history.forEach(message => {
+                        addMessage(message.content, message.is_user);
+                    });
+                    return data.history.length;
+                }
+                return 0;
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+                return 0;
+            });
+    }
+
     function openPopup() {
         aiAssistantPopup.classList.remove('translate-y-full');
         aiAssistantButton.classList.add('hidden');
         isPopupOpen = true;
         
-        // Add initial suggestions
-        const suggestions = [
-            "Show me the total earnings for this month.",
-            "What are the most performed operations?",
-            "Compare this month's performance with last month."
-        ];
-        
-        let formattedResponse = document.createElement('div');
-        formattedResponse.className = 'mt-2 p-2 bg-purple-50 rounded-lg suggestions-container';
-        
-        const questionsTitle = document.createElement('div');
-        questionsTitle.className = 'text-sm font-semibold text-purple-700 mb-3';
-        questionsTitle.textContent = 'Get started with:';
-        formattedResponse.appendChild(questionsTitle);
-        
-        const questionsList = document.createElement('div');
-        questionsList.className = 'flex flex-col gap-2';
-        
-        suggestions.forEach(question => {
-            const questionButton = document.createElement('button');
-            questionButton.className = 'text-left text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-100 p-2 rounded-md transition-colors duration-200';
-            questionButton.textContent = question;
-            questionButton.onclick = () => {
-                document.getElementById('query-input').value = question;
-                document.getElementById('ai-query-form').dispatchEvent(new Event('submit'));
-            };
-            questionsList.appendChild(questionButton);
+        loadChatHistory().then(historyLength => {
+            if (historyLength === 0) {
+                const suggestions = [
+                    "Show me the total earnings for this month.",
+                    "What are the most performed operations?",
+                    "Compare this month's performance with last month."
+                ];
+                
+                let formattedResponse = document.createElement('div');
+                formattedResponse.className = 'mt-2 p-2 bg-purple-50 rounded-lg suggestions-container';
+                
+                const questionsTitle = document.createElement('div');
+                questionsTitle.className = 'text-sm font-semibold text-purple-700 mb-3';
+                questionsTitle.textContent = 'Get started with:';
+                formattedResponse.appendChild(questionsTitle);
+                
+                const questionsList = document.createElement('div');
+                questionsList.className = 'flex flex-col gap-2';
+                
+                suggestions.forEach(question => {
+                    const questionButton = document.createElement('button');
+                    questionButton.className = 'text-left text-sm text-purple-600 hover:text-purple-800 hover:bg-purple-100 p-2 rounded-md transition-colors duration-200';
+                    questionButton.textContent = question;
+                    questionButton.onclick = () => {
+                        document.getElementById('query-input').value = question;
+                        document.getElementById('ai-query-form').dispatchEvent(new Event('submit'));
+                    };
+                    questionsList.appendChild(questionButton);
+                });
+                
+                formattedResponse.appendChild(questionsList);
+                addMessage(formattedResponse);
+            }
         });
-        
-        formattedResponse.appendChild(questionsList);
-        addMessage(formattedResponse);
     }
+    
 
     function closePopup() {
         aiAssistantPopup.classList.add('translate-y-full');
@@ -267,6 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (content instanceof HTMLElement) {
             messageDiv.appendChild(content);
+        } else if (typeof content === 'object') {
+            messageDiv.appendChild(formatResponse(content));
         } else {
             messageDiv.textContent = content;
         }
