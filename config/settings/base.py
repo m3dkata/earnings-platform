@@ -24,10 +24,7 @@ INTERNAL_IPS = env.list('INTERNAL_IPS')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-if os.name == 'nt':
-    NPM_BIN_PATH = r"C:\\Program Files\\nodejs\\npm.cmd"
-else:
-    NPM_BIN_PATH = 'npm'
+
 # Tailwind App Name
 TAILWIND_APP_NAME='theme'
 
@@ -258,7 +255,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
 EMAIL_USE_LOCALTIME = True
 EMAIL_TIMEOUT = 300
-EMAIL_USE_SSL = True
+EMAIL_USE_SSL = False
 
 # Authentication settings
 LOGIN_REDIRECT_URL = 'dashboard'
