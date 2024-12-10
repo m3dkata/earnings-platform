@@ -14,6 +14,7 @@ from .forms import LeaveRequestForm
 from datetime import datetime
 from .forms import LeaveFilterForm
 from apps.notifications.services import NotificationService
+from apps.payrolls.tasks import generate_payroll
 
 def get_base_context(request):
     if request.user.is_authenticated and request.user.is_staff:
@@ -58,6 +59,10 @@ class ApproveLeaveView(PermissionRequiredMixin, View):
             else:
                 payroll.sick_days += days
             payroll.save()
+            generate_payroll.delay(
+                leave.employee.id,
+                leave.start_datetime.strftime('%Y-%m-%d')
+            )
         
         NotificationService.notify_leave_status(leave)
         messages.success(request, f'Leave request for {leave.employee} has been approved')
