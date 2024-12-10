@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-2 sm:p-4 max-w-full mx-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-center">Leave Requests</h2>
+        
+        <a href="{% url 'leave_request' %}"
+           class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+            <i class="fa-solid fa-plus"></i> Request Leave
+        </a>
+    </div>
+
+    <div class="p-4 rounded-lg mb-4">
+        <form method="get" class="flex flex-col items-center gap-4" id="filterForm">
+            <div class="w-full max-w-md flex flex-col sm:flex-row justify-center gap-4">
+                <input type="month" 
+                       name="month" 
+                       value="{{ request.GET.month }}"
+                       onchange="document.getElementById('filterForm').submit()"
+                       class="w-full sm:w-1/3 rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                
+                {% if perms.employees.can_approve_leave %}
+                <select name="employee" 
+                        onchange="document.getElementById('filterForm').submit()"
+                        class="w-full sm:w-1/3 rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                    <option value="">All Employees</option>
+                    {% for employee in employees %}
+                    <option value="{{ employee.id }}" {% if request.GET.employee|add:0 == employee.id %}selected{% endif %}>
+                        {{ employee }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for leave in leaves %}
+        <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-xl">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <h3 class="font-semibold">{{ leave.employee }}</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">{{ leave.get_leave_type_display }}</p>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full
+                    {% if leave.status == 'APPROVED' %}bg-green-100 text-green-800
+                    {% elif leave.status == 'REJECTED' %}bg-red-100 text-red-800
+                    {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                    {{ leave.get_status_display }}
+                </span>
+            </div>
+            
+            <div class="space-y-2 text-sm">
+                <p><span class="font-medium">Start:</span> {{ leave.start_datetime }}</p>
+                <p><span class="font-medium">End:</span> {{ leave.end_datetime }}</p>
+                <p><span class="font-medium">Duration:</span> 
+                    {% if leave.duration_in_days %}
+                    {{ leave.duration_in_days }} days
+                    {% endif %}
+                    {{ leave.duration_in_hours }} hours</p>
+                <p class="text-slate-600 dark:text-slate-400">{{ leave.reason }}</p>
+            </div>
+
+            {% if perms.employees.can_approve_leave and leave.status == 'PENDING' %}
+            <div class="mt-4 flex justify-end gap-2">
+                <button hx-post="{% url 'approve_leave' leave.id %}"
+                        hx-swap="none"
+                        hx-trigger="click"
+                        hx-on::after-request="window.location.reload()"
+                        class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-2 py-2 text-center me-2">
+                    Approve
+                </button>
+                <button hx-post="{% url 'reject_leave' leave.id %}"
+                        hx-swap="none"
+                        hx-trigger="click"
+                        hx-on::after-request="window.location.reload()"
+                        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-2 py-2 text-center me-2">
+                    Reject
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8 text-slate-500 dark:text-slate-400">
+            No leave requests found
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

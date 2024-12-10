@@ -79,6 +79,15 @@
             {% endif %}
             <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)">Stats</span>
         </a>
+        <a href="{% url 'leave_list' %}" class="{% if request.resolver_match.url_name == 'leave_list' %}text-purple-600 dark:text-lime-500{% endif %} flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+            </svg>
+            {% if request.resolver_match.url_name == 'leave_list' %}
+                <i class="fa-solid fa-caret-right"></i>
+            {% endif %}
+            <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)">Leaves</span>
+        </a>
         {% else %}
         <div class="h-screen flex items-center justify-center">
             <div style="writing-mode: tb-rl;" class="text-3xl font-bold tracking-wider whitespace-nowrap transition-transform duration-300">

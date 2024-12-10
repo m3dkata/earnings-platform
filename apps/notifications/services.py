@@ -63,5 +63,41 @@ class NotificationService:
                     "message": f"New report submitted by {report.employee.user.get_full_name()} for {report.date}"
                 }
             )
+            
+    @staticmethod
+    def notify_leave_request(leave):
+        staff_users = get_user_model().objects.filter(is_staff=True)
+        channel_layer = get_channel_layer()
+        
+        for staff_user in staff_users:
+            Notification.objects.create(
+                recipient=staff_user,
+                notification_type='leave_request',
+                message=f'New leave request from {leave.employee.user.get_full_name()}'
+            )
+            
+            async_to_sync(channel_layer.group_send)(
+                f"user_{staff_user.id}",
+                {
+                    "type": "notification_message",
+                    "message": f"New leave request from {leave.employee.user.get_full_name()}"
+                }
+            )
 
-    
+    @staticmethod
+    def notify_leave_status(leave):
+        channel_layer = get_channel_layer()
+        
+        Notification.objects.create(
+            recipient=leave.employee.user,
+            notification_type='leave_status',
+            message=f'Your leave request has been {leave.status.lower()}'
+        )
+        
+        async_to_sync(channel_layer.group_send)(
+            f"user_{leave.employee.user.id}",
+            {
+                "type": "notification_message",
+                "message": f"Your leave request for {leave.start_datetime.date()} has been {leave.status.lower()}"
+            }
+        )

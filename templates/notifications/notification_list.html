@@ -50,14 +50,16 @@
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
             {% for notification in notifications %}
             <div data-notification-type="{{ notification.notification_type }}"
-                data-notification-id="{{ notification.pk }}"
-                {% if notification.notification_type == 'report_status' or notification.notification_type == 'report_submission' %}
-                data-url="{% url 'report-update' notification.report.pk %}"
-                {% else %}
-                data-url="{% url 'inactive_employees' %}"
-                {% endif %}
-                data-is-read="{{ notification.is_read|yesno:'true,false' }}"
-                class="notification-list-item p-4 {% if notification.is_read %}bg-slate-100 dark:bg-slate-800{% else %}bg-purple-200 dark:bg-purple-900{% endif %} rounded-lg hover:shadow-lg transition-all cursor-pointer">
+                 data-notification-id="{{ notification.pk }}"
+                 {% if notification.notification_type == 'report_status' and notification.report %}
+                 data-url="{% url 'report-update' notification.report.pk %}"
+                 {% elif notification.notification_type == 'leave_request' or notification.notification_type == 'leave_status' %}
+                 data-url="{% url 'leave_list' %}"
+                 {% else %}
+                 data-url="{% url 'inactive_employees' %}"
+                 {% endif %}
+                 data-is-read="{{ notification.is_read|yesno:'true,false' }}"
+                 class="notification-list-item p-4 {% if notification.is_read %}bg-slate-100 dark:bg-slate-800{% else %}bg-purple-200 dark:bg-purple-900{% endif %} rounded-lg hover:shadow-lg transition-all cursor-pointer">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-sm">{{ notification.message }}</p>
@@ -69,7 +71,6 @@
             <p class="text-center text-slate-500 col-span-full">No notifications found</p>
             {% endfor %}
         </div>
- 
 
         <!-- Pagination -->
         {% if is_paginated %}

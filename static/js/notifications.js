@@ -73,13 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         notification.is_read ? 'bg-slate-100 dark:bg-slate-700' : 'bg-purple-400 dark:bg-slate-800'
                     } border-b border-slate-200`;
                     
+                    // console.log('Notification type:', notification.notification_type);
+                    
                     notificationItem.dataset.notificationType = notification.notification_type;
-                    if (notification.notification_type === 'report_status' && notification.report) {
+                    
+                    if (notification.notification_type === 'leave_request' || 
+                        notification.notification_type === 'leave_status') {
+                        notificationItem.dataset.leaveUrl = '/employees/leaves/';
+                    } else if (notification.notification_type === 'report_status' && notification.report) {
                         notificationItem.dataset.reportUrl = `/reports/${notification.report}/update/`;
                     } else if (notification.notification_type === 'registration') {
                         notificationItem.dataset.registrationUrl = '/employees/inactive/';
                     }
-    
+                
                     notificationItem.innerHTML = createNotificationHTML(notification, csrfToken);
                     notificationList.appendChild(notificationItem);
                 });
@@ -101,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = item.dataset.reportUrl;
                     } else if (type === 'registration') {
                         window.location.href = item.dataset.registrationUrl;
+                    } else if (type === 'leave_status') {
+                        window.location.href = item.dataset.leaveUrl;
                     }
                 }
             });

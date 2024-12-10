@@ -26,7 +26,7 @@ class Report(models.Model):
             self.save()
 
     def __str__(self):
-        return f"Report #{self.number} - {self.employee}"
+        return f"Report #{self.pk} - {self.employee}"
 
     @property
     def total_working_time(self):

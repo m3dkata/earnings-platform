@@ -3,16 +3,16 @@
 
 {% block content %}
 <div class="h-[95dvh] w-full p-2 flex flex-col overflow-hidden" x-data="{ showForm: false }">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-center items-center">
         <input type="month"
             value="{{ month_year }}"
             onchange="window.location.href='?month_year=' + this.value"
             class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 text-xs sm:text-sm border-slate-300 p-1.5 sm:p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:text-white">        
         
-        <a href="{% url 'report-create' %}"
+        <!-- <a href="{% url 'report-create' %}"
            class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-[10px] sm:text-xs px-3 sm:px-5 py-1.5 sm:py-2 text-center me-2">
             <i class="fa-solid fa-plus"></i> Report
-        </a>
+        </a> -->
     </div>
     <div class="grid grid-cols-7 gap-1 py-1">
         <!-- Week day headers in a separate grid row -->
