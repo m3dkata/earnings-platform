@@ -42,7 +42,8 @@ class Employee(models.Model):
     )
     position = models.CharField(max_length=100, choices=POSITION_CHOICES, verbose_name='Position')
     workshop = models.ForeignKey(Workshop, on_delete=models.PROTECT, verbose_name='Workshop')
-
+    is_online = models.BooleanField(default=False, db_index=True)
+    
     class Meta:
         ordering = ['number']
         unique_together = ('number', 'workshop')

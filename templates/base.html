@@ -79,6 +79,20 @@
     <script src="{% static 'js/modal.js' %}"></script>
     {% if request.user.is_authenticated %}
     <script src="{% static 'js/notifications.js' %}"></script>
+    <script>
+        const userActivityWs = new WebSocket(
+            `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/user_activity/`
+        );
+    
+        userActivityWs.onclose = () => {
+            console.log('Activity tracking disconnected');
+        };
+        window.addEventListener('beforeunload', () => {
+            if (userActivityWs) {
+                userActivityWs.close(1000, 'Page closed');
+            }
+        });
+    </script>
     {% endif %}
 </body>
 </html>
