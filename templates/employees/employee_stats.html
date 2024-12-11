@@ -4,6 +4,31 @@
 {% block content %}
 <div class="p-2 sm:p-4 max-w-full mx-auto">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <!-- Total Operations Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Executed Operations</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations }}</h3>
+                </div>
+                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                    <i class="fa-solid fa-clipboard-list text-purple-500 dark:text-purple-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Reports Card -->
+        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Total Reports</p>
+                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_reports }}</h3>
+                </div>
+                <div class="p-2 bg-lime-100 dark:bg-lime-900 rounded-lg">
+                    <i class="fa-solid fa-file-lines text-lime-500 dark:text-lime-300"></i>
+                </div>
+            </div>
+        </div>
         {% if request.user.is_staff %}
         <!-- Combined Filters Card -->
         <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
@@ -34,34 +59,8 @@
             </form>
         </div>
         {% endif %}
-
-        <!-- Total Operations Card -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Executed Operations</p>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations }}</h3>
-                </div>
-                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <i class="fa-solid fa-clipboard-list text-purple-500 dark:text-purple-300"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Reports Card -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Total Reports</p>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_reports }}</h3>
-                </div>
-                <div class="p-2 bg-lime-100 dark:bg-lime-900 rounded-lg">
-                    <i class="fa-solid fa-file-lines text-lime-500 dark:text-lime-300"></i>
-                </div>
-            </div>
-        </div>
     </div>
-
+    
     <!-- Charts -->
     <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 mb-4">
         <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Operations Over Time</h3>

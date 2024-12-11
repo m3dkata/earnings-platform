@@ -3,13 +3,13 @@
 {% block content %}
 <div class="max-w-full mx-auto px-4 py-6">
     {% if user.is_staff %}
-    <div class="mb-6 flex flex-col sm:flex-row justify-center items-center gap-4">
+    <div class="mb-6 flex flex-row sm:flex-row justify-center items-center gap-4">
         <form method="get" class="w-48">
             <input type="month" name="month_year" value="{{ request.GET.month_year }}" onchange="this.form.submit()" 
-                    class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                    class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5 dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
         </form>
         <a href="{% url 'payroll-create' %}"
-           class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+           class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
            <i class="fa-solid fa-plus"></i> Payroll
         </a>
     </div>
@@ -17,7 +17,7 @@
     <div class="mb-6 flex justify-center">
         <form method="get" class="w-48">
             <select name="year" onchange="this.form.submit()" 
-                    class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                    class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5 dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                 {% for year in years %}
                     <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
                         {{ year }}
@@ -26,85 +26,106 @@
             </select>
         </form>
     </div>
-{% endif %}
+    {% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {% if payrolls %}
             {% for payroll in payrolls %}
-                <div class="bg-slate-50 dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-2xl overflow-hidden">
+                <div class="bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out overflow-hidden">
                     <div class="p-6">
-                        <div class="flex justify-center mb-4">
-                            <a href="{% url 'payroll-pdf' payroll.pk %}" target="_blank" title="Click to view">
-                                <img src="data:image/png;base64,{{ payroll.qr_code }}" 
-                                    alt="Payroll QR Code"
-                                    class="w-24 h-24 cursor-pointer hover:opacity-80 transition-opacity">
-                            </a>
-                        </div>                    
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-l font-bold text-gray-800 dark:text-white">{{ payroll.employee }}</h3>
-                                <p class="text-slate-600 dark:text-slate-400">{{ payroll.month|date:"F Y" }}</p>
+                        <div class="flex items-center space-x-6 mb-4">
+                            <div class="flex-shrink-0">
+                                {% if payroll.employee.user.profile_image %}
+                                    <img src="{{ payroll.employee.user.profile_image.url }}" 
+                                         alt="{{ payroll.employee }}'s photo"
+                                         class="w-16 h-16 object-cover rounded-full border-4 border-white dark:border-slate-700 shadow-md">
+                                {% else %}
+                                    <div class="w-16 h-16 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded-full text-slate-500 dark:text-slate-400 text-center text-xs">
+                                        No Photo
+                                    </div>
+                                {% endif %}
                             </div>
-                            {% if user.is_staff %}
-                                <div class="flex gap-2">
-                                    <a href="{% url 'payroll-update' payroll.pk %}?month={{ payroll.month|date:'Y-m' }}&employee={{ payroll.employee.id }}"
-                                        class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-xs px-3 py-1 text-center">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </a>
-                                    <a href="{% url 'payroll-delete' payroll.pk %}" 
-                                    class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-3 py-1 text-center me-2">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    </a>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                            {{ payroll.employee }}
+                                        </h3>
+                                        <p class="text-sm text-gray-500 dark:text-slate-400">
+                                            {{ payroll.month|date:"F Y" }}
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <a href="{% url 'payroll-pdf' payroll.pk %}" target="_blank" 
+                                           class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400">
+                                            <img src="data:image/png;base64,{{ payroll.qr_code }}" 
+                                                 alt="Payroll QR Code"
+                                                 class="w-16 h-16 object-contain">
+                                        </a>
+                                    </div>
                                 </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-slate-500 dark:text-slate-400">Total</span>
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ payroll.total }}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500 dark:text-slate-400">Percent</span>
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ payroll.percent }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <button data-target="payroll-{{ payroll.pk }}" 
+                                    onclick="toggleDetails(this.dataset.target)"
+                                    class="flex-grow px-4 py-2 text-sm text-gray-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                                See More Details
+                            </button>
+                            
+                            {% if user.is_staff %}
+                                <a href="{% url 'payroll-update' payroll.pk %}?month={{ payroll.month|date:'Y-m' }}&employee={{ payroll.employee.id }}"
+                                   class="text-green-500 hover:text-green-600 dark:hover:text-green-400 p-2 rounded-lg">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </a>
+                                <a href="{% url 'payroll-delete' payroll.pk %}"
+                                   class="text-red-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
                             {% endif %}
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <p class="text-sm text-slate-600 dark:text-slate-400">Total</p>
-                                <p class="text-lg font-semibold">{{ payroll.total }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-600 dark:text-slate-400">Percent</p>
-                                <p class="text-lg font-semibold">{{ payroll.percent }}%</p>
-                            </div>
-                        </div>
-
-                        <button data-target="payroll-{{ payroll.pk }}" 
-                                onclick="toggleDetails(this.dataset.target)"
-                                class="w-full px-4 py-2 text-xs text-gray-800 dark:text-slate-300 rounded-lg hover:underline uppercase">
-                            See More
-                        </button>
-
                         <div id="payroll-{{ payroll.pk }}" class="hidden mt-4 space-y-3">
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Work Days</p>
-                                    <p class="font-medium">{{ payroll.work_days }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Work Days</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.work_days }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Earnings</p>
-                                    <p class="font-medium">{{ payroll.earnings }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Earnings</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.earnings }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Attendance Bonus</p>
-                                    <p class="font-medium">{{ payroll.attendance_bonus }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Attendance Bonus</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.attendance_bonus }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Vacation Days</p>
-                                    <p class="font-medium">{{ payroll.vacation_days }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Vacation Days</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.vacation_days }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Sick Days</p>
-                                    <p class="font-medium">{{ payroll.sick_days }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Sick Days</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.sick_days }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Bank Transfer</p>
-                                    <p class="font-medium">{{ payroll.bank_transfer }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Bank Transfer</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.bank_transfer }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Cash Payment</p>
-                                    <p class="font-medium">{{ payroll.cash_payment }}</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Cash Payment</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.cash_payment }}</p>
                                 </div>
                             </div>
                         </div>

@@ -72,6 +72,9 @@ class Leave(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def __str__(self):
+        return f"{self.employee.user.get_full_name()} - {self.leave_type} / {self.status}"
+    
     def duration_in_hours(self):
         duration = self.end_datetime - self.start_datetime
         total_hours = duration.total_seconds() / 3600

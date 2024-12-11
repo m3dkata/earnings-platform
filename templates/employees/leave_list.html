@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="p-2 sm:p-4 max-w-full mx-auto">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center">
         <h2 class="text-xl font-bold text-center">Leave Requests</h2>
         
         <a href="{% url 'leave_request' %}"
@@ -11,9 +11,9 @@
         </a>
     </div>
 
-    <div class="p-4 rounded-lg mb-4">
+    <div class="p-4 rounded-lg">
         <form method="get" class="flex flex-col items-center gap-4" id="filterForm">
-            <div class="w-full max-w-md flex flex-col sm:flex-row justify-center gap-4">
+            <div class="w-full max-w-2xl flex flex-col sm:flex-row justify-center gap-4">
                 <input type="month" 
                        name="month" 
                        value="{{ request.GET.month }}"
@@ -36,7 +36,7 @@
         </form>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {% for leave in leaves %}
         <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-xl">
             <div class="flex justify-between items-start mb-2">

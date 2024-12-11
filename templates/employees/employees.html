@@ -6,12 +6,12 @@
         <input type="text" id="searchField" placeholder="Search employees..." class="w-full rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
     </div>
 
-    {% if user.is_staff %}
+    {% if user.is_staff and request.resolver_match.url_name == 'active_employees' %}
     <div class="mb-4 flex justify-center gap-6">
         <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" id="workingFilter" class="sr-only peer">
-            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Working Now</span>
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Working</span>
         </label>
         
         <label class="inline-flex items-center cursor-pointer">
@@ -24,6 +24,7 @@
 
     <section class="mb-12">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {% if employees %}
             {% for employee in employees %}
             <div class="employee-card relative group bg-slate-50 dark:bg-slate-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300" 
             data-name="{% if employee.user %}{{ employee.user.get_full_name|lower }}{% else %}{{ employee.get_full_name|lower }}{% endif %}" 
@@ -32,15 +33,15 @@
             data-id="{% if employee.number %}{{ employee.number }}{% endif %}" 
             data-user-id="{{ employee.user.id }}" 
             data-status="{{ employee.is_online|yesno:'online,offline' }}">
-                <div class="absolute top-2 right-2 z-10 flex items-center">
-                    <span class="text-xs font-bold mr-2 {% if employee.is_online %}text-green-500{% else %}text-red-500{% endif %}">
-                        {% if employee.is_online %}WORKING{% else %}NOT WORKING{% endif %}
-                    </span>
+                <div class="absolute top-1 left-2 z-10 flex items-center">
                     <span class="flex h-3 w-3">
                         {% if employee.is_online %}
-                            <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-90"></span>
+                            <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-600 opacity-90"></span>
                         {% endif %}
-                        <span class="status-indicator relative inline-flex rounded-full h-3 w-3 {% if employee.is_online %}bg-green-500{% else %}bg-red-500{% endif %}"></span>
+                        <span class="status-indicator relative inline-flex rounded-full h-3 w-3 {% if employee.is_online %}bg-green-400{% else %}bg-red-500{% endif %}"></span>
+                    </span>
+                    <span class="text-xs font-bold ml-2 {% if employee.is_online %}text-green-500{% else %}text-red-500{% endif %}">
+                        {% if employee.is_online %}WORKING{% else %}NOT WORKING{% endif %}
                     </span>
                 </div>
                 <div class="relative w-40 h-40 mx-auto rounded-full mt-2 overflow-hidden">
@@ -105,6 +106,13 @@
                 {% endif %}
             </div>
             {% endfor %}
+            {% else %}  
+            <div class="col-span-full text-center py-12">
+                <div class="p-8">
+                    <p class="text-xl text-slate-600 dark:text-slate-300">No employees found in this category</p>
+                </div>
+            </div>
+        {% endif %} 
         </div>
     </section>
 </div>
