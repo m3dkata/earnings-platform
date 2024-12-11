@@ -16,3 +16,13 @@ def report_context(request):
             pass
             
     return context
+
+def employee_status_context(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        total_active = Employee.objects.filter(user__is_active=True).count()
+        working_now = Employee.objects.filter(user__is_active=True, is_online=True).count()
+        return {
+            'active_employees_count': total_active,
+            'working_employees_count': working_now
+        }
+    return {}
