@@ -106,7 +106,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.report_context',
-                'apps.employees.views.get_base_context',
+                'config.context_processors.employee_status_context',
             ],
         },
     },
