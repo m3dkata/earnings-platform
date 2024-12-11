@@ -139,12 +139,12 @@ class EmployeeStatsView(LoginRequiredMixin, TemplateView):
         ).filter(
             report__employee=employee,
             report__date__gte=start_date
-        )
+        ).order_by('operation__code')
 
         reports = Report.objects.select_related('employee').filter(
             employee=employee,
             date__gte=start_date
-        )
+        ).order_by('date')
 
         chart_data = []
         for operation in operations:

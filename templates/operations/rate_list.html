@@ -10,29 +10,18 @@
     </div>
 
     {% if rates %}
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 shadow-2xl rounded-lg overflow-hidden">
-            <thead class="bg-slate-50 dark:bg-slate-800">
-                <tr>
-                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</th>
-                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Value</th>
-                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Operations</th>
-                    <th class="p-1 sm:px-4 sm:py-3 text-left text-[12px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
-                {% for rate in rates %}
-                {% include 'operations/partials/rate_row.html' %}
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {% for rate in rates %}
+            {% include 'operations/partials/rate_row.html' %}
+        {% endfor %}
     </div>
-    {% else %}  
-        <div class="col-span-full text-center py-12">
-            <div class="p-8">
-                <p class="text-xl text-slate-600 dark:text-slate-300">No rates are created yet</p>
-            </div>
+    {% else %}
+    <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow-xl">
+        <div class="p-8">
+            <i class="fa-solid fa-clipboard-list text-4xl text-purple-500 mb-4"></i>
+            <p class="text-xl text-slate-600 dark:text-slate-300">No rates are created yet</p>
         </div>
-    {% endif %}  
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

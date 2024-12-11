@@ -17,33 +17,48 @@
     <div class="mt-6">
         <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
             <h2 class="text-l font-bold mb-4">Reports - {{ selected_date|date:"d M Y" }}</h2>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[350px] overflow-y-auto">
                 <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
                     <thead>
                         <tr>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">%</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">%</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
                         {% for report in reports %}
                             {% if report.status == 'SUBMITTED' or report.status == 'REJECTED' or report.status == 'APPROVED' %}
                             <tr>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.employee }}</td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
-                                    <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">
+                                    <div class="flex flex-shrink-0 items-center space-x-2">
+                                        {% if report.employee.user.profile_image %}
+                                            <img src="{{ report.employee.user.profile_image.url }}" 
+                                                 alt="{{ report.employee }}'s photo"
+                                                 class="w-8 h-8 object-cover rounded-full border-4 border-white dark:border-slate-700 shadow-md">
+                                        {% else %}
+                                            <div class="w-8 h-8 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded-full text-slate-500 dark:text-slate-400 text-center text-xs">
+                                                {{ report.employee.user.first_name|first }}{{ report.employee.user.last_name|first }}
+                                            </div>
+                                        {% endif %}
+                                        <span class="text-sm font-medium dark:text-slate-300">
+                                            {{ report.employee.user.first_name }} {{ report.employee.user.last_name }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-2 py-1 sm:px-6 sm:py-1 text-[8px] sm:text-sm">
+                                    <span class="px-1 inline-flex text-[8px] sm:text-xs leading-5 font-semibold rounded-full
                                         {% if report.status == 'APPROVED' %}bg-green-100 text-green-800
                                         {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800
                                         {% else %}bg-yellow-100 text-yellow-800{% endif %}">
                                         {{ report.status }}
                                     </span>
                                 </td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_percent }}%</td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_sum }}</td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">{{ report.total_percent }}%</td>
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">{{ report.total_sum }}</td>
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">
                                     <a href="{% url 'report-update' report.pk %}" 
                                     class="text-purple-600 hover:text-purple-900 hover:underline uppercase">Review</a>
                                 </td>
@@ -65,19 +80,34 @@
     <div class="grid lg:grid-cols-2 gap-4 mt-4">
         <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
             <h2 class="text-l font-bold mb-4">Missing Reports - {{ selected_date|date:"d M Y" }}</h2>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
                 <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
                     <thead>
                         <tr>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
                         {% for employee in employees_without_reports %}
                         <tr>
-                            <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ employee }}</td>
-                            <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">
+                            <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">
+                                <div class="flex flex-shrink-0 items-center space-x-2">
+                                    {% if employee.user.profile_image %}
+                                        <img src="{{ employee.user.profile_image.url }}" 
+                                             alt="{{ employee }}'s photo"
+                                             class="w-8 h-8 object-cover rounded-full border-4 border-white dark:border-slate-700 shadow-md">
+                                    {% else %}
+                                        <div class="w-8 h-8 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded-full text-slate-500 dark:text-slate-400 text-center text-xs">
+                                            {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                        </div>
+                                    {% endif %}
+                                    <span class="text-sm font-medium dark:text-slate-300">
+                                        {{ employee.user.first_name }} {{ employee.user.last_name }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">
                                 <a href="{% url 'report-create' %}?employee={{ employee.pk }}&date={{ selected_date|date:'Y-m-d' }}"
                                    class="text-purple-600 hover:text-purple-900 hover:underline uppercase"><i class="fa-solid fa-plus"></i> Report</a>
                             </td>
@@ -96,22 +126,37 @@
 
         <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg shadow-2xl">
             <h2 class="text-l font-bold mb-4">Draft Reports - {{ selected_date|date:"d M Y" }}</h2>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
                 <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
                     <thead>
                         <tr>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">%</th>
-                            <th class="px-2 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Employee</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">%</th>
+                            <th class="px-1 py-1 sm:px-6 sm:py-1 text-left text-xs font-medium text-slate-500 uppercase">Sum</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
                         {% for report in reports %}
                             {% if report.status == 'DRAFT'%}
                             <tr>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.employee }}</td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_percent }}%</td>
-                                <td class="px-2 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm">{{ report.total_sum }}</td>
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">
+                                    <div class="flex flex-shrink-0 items-center space-x-2">
+                                        {% if report.employee.user.profile_image %}
+                                            <img src="{{ report.employee.user.profile_image.url }}" 
+                                                 alt="{{ report.employee }}'s photo"
+                                                 class="w-8 h-8 object-cover rounded-full border-4 border-white dark:border-slate-700 shadow-md">
+                                        {% else %}
+                                            <div class="w-8 h-8 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded-full text-slate-500 dark:text-slate-400 text-center text-xs">
+                                                {{ report.employee.user.first_name|first }}{{ report.employee.user.last_name|first }}
+                                            </div>
+                                        {% endif %}
+                                        <span class="text-sm font-medium dark:text-slate-300">
+                                            {{ report.employee.user.first_name }} {{ report.employee.user.last_name }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">{{ report.total_percent }}%</td>
+                                <td class="px-1 py-1 sm:px-6 sm:py-1 text-xs sm:text-sm">{{ report.total_sum }}</td>
                             </tr>
                             {% endif %}
                         {% empty %}
