@@ -28,13 +28,13 @@
               isPinned: localStorage.getItem('sidebarPinned') === 'true'
           }
       }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-    <div class="fixed top-0 w-full z-50">
+    <div class="fixed top-0 z-50 w-full">
         {% include 'partials/navbar.html' %}
     </div>
     <div class="flex min-h-screen bg-slate-100 dark:bg-slate-800">
         <div x-show="sidebarOpen" 
              @click="sidebarOpen = false"
-             class="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40 transition-opacity"
+             class="fixed inset-0 z-40 transition-opacity bg-black bg-opacity-50 lg:hidden"
              x-transition:enter="transition-opacity ease-linear duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -43,18 +43,18 @@
              x-transition:leave-end="opacity-0">
         </div>
         {% include 'partials/sidebar.html' %}
-        <main class="flex-1 p-0 md:p-0 mt-12 transition-all duration-300"
+        <main class="flex-1 p-0 mt-12 transition-all duration-300 md:p-0"
             :class="{'lg:ml-48': store.isPinned, 'lg:ml-14': !store.isPinned}">
             {% block content %}{% endblock %}
         </main>
     </div>
     {% if request.user.is_authenticated and request.user.is_employee and not has_today_report %}
-    <div class="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-auto z-50 bg-red-100 dark:bg-red-900 p-2 shadow-lg flex items-center justify-between md:rounded-lg">
+    <div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between p-2 bg-red-100 shadow-lg md:bottom-4 md:left-4 md:right-auto dark:bg-red-900 md:rounded-lg">
         <div>
-            <p class="text-red-700 dark:text-red-300 font-medium text-xs">You do not have Report for today</p>
+            <p class="text-xs font-medium text-red-700 dark:text-red-300">You do not have Report for today</p>
         </div>
         <a href="{% url 'report-create' %}?date={% now 'Y-m-d' %}"  
-        class="ml-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+        class="px-3 py-2 ml-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80">
             Add
         </a>
     </div>

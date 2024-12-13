@@ -7,8 +7,8 @@
         <!-- Left Sidebar -->
         <div class="space-y-4 lg:col-span-1">
             <!-- Profile Card -->
-            <div class="rounded-lg bg-slate-100 dark:bg-slate-700 shadow-xl border border-slate-200 dark:border-slate-700">
-                <div class="p-6 relative pt-12">
+            <div class="border rounded-lg shadow-xl bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-700">
+                <div class="relative p-6 pt-12">
                     <div class="absolute start-4 top-4 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-lime-500 text-slate-800">
                         {% if user.is_superuser %}ADMIN{% else %}EMPLOYEE{% endif %}
                     </div>
@@ -21,16 +21,16 @@
                               }">
                             {% csrf_token %}
                             <div class="flex flex-col items-center space-y-4">
-                                <div class="relative group cursor-pointer" @click="triggerFileInput">
+                                <div class="relative cursor-pointer group" @click="triggerFileInput">
                                     {% if user.profile_image %}
                                         <img src="{{ user.profile_image.url }}" alt="{{ user.get_full_name }}" 
-                                            class="h-20 w-20 rounded-full object-cover border-1 border-slate-500 ring-2 ring-offset-2 ring-slate-500">
+                                            class="object-cover w-20 h-20 rounded-full border-1 border-slate-500 ring-2 ring-offset-2 ring-slate-500">
                                     {% else %}
-                                        <div class="h-20 w-20 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-800 dark:text-white text-xl border-1 border-slate-500 ring-2 ring-offset-2 ring-slate-500">
+                                        <div class="flex items-center justify-center w-20 h-20 text-xl rounded-full bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white border-1 border-slate-500 ring-2 ring-offset-2 ring-slate-500">
                                             {{ user.first_name|first }}{{ user.last_name|first }}
                                         </div>
                                     {% endif %}
-                                    <div class="absolute inset-0 rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div class="absolute inset-0 flex items-center justify-center transition-opacity bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100">
                                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -48,8 +48,8 @@
                         <div class="flex flex-col items-center">
                             {% if user.is_superuser %}
                             <button @click="window.location.href='{% url 'admin:index' %}'"
-                                    class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2">
-                                    <i class="fa-solid fa-user-tie w-5 h-5"></i>
+                                    class="px-5 py-2 text-sm font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">
+                                    <i class="w-5 h-5 fa-solid fa-user-tie"></i>
                                 <span>Admin Panel</span>
                             </button>
                             {% endif %}
@@ -59,27 +59,27 @@
                             {% if user.employee_profile %}
                                 {% if user.employee_profile.number %}
                                 <div class="flex items-center gap-3">
-                                    <i class="fa-solid fa-hashtag w-4 h-4"></i> {{ user.employee_profile.number }}
+                                    <i class="w-4 h-4 fa-solid fa-hashtag"></i> {{ user.employee_profile.number }}
                                 </div>
                                 {% endif %}
                                 {% if user.employee_profile.position %}
                                 <div class="flex items-center gap-3">
-                                    <i class="fa-solid fa-user-tie w-4 h-4"></i> {{ user.employee_profile.position }}
+                                    <i class="w-4 h-4 fa-solid fa-user-tie"></i> {{ user.employee_profile.position }}
                                 </div>
                                 {% endif %}
                                 {% if user.employee_profile.workshop %}
                                 <div class="flex items-center gap-3">
-                                    <i class="fa-regular fa-building w-4 h-4"></i> {{ user.employee_profile.workshop }}
+                                    <i class="w-4 h-4 fa-regular fa-building"></i> {{ user.employee_profile.workshop }}
                                 </div>
                                 {% endif %}
                             {% endif %}
                             <div class="flex items-center gap-3">
-                                <i class="fa-regular fa-envelope w-4 h-4"></i>
+                                <i class="w-4 h-4 fa-regular fa-envelope"></i>
                                 {{ user.email }}
                             </div>
                             {% if user.phone_number %}
                             <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-phone w-4 h-4"></i>
+                                <i class="w-4 h-4 fa-solid fa-phone"></i>
                                 {{ user.phone_number }}
                             </div>
                             {% endif %}
@@ -89,8 +89,8 @@
                 <div class="p-6">
                     <div class="flex items-center justify-center mb-4">
                             <div class="flex items-center space-x-2">
-                                <button @click="editMode = !editMode" class="inline-flex items-center justify-center text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
-                                    <i class="fa-solid fa-pen-to-square mr-2 h-4 w-4"></i>
+                                <button @click="editMode = !editMode" class="inline-flex items-center justify-center px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
+                                    <i class="w-4 h-4 mr-2 fa-solid fa-pen-to-square"></i>
                                     <span x-text="editMode ? 'Cancel' : 'Edit'"></span>
                                 </button>
                             </div>
@@ -121,20 +121,20 @@
                             <div>
                                 <label class="block text-xs text-slate-400">First Name</label>
                                 <input type="text" name="first_name" value="{{ user.first_name }}" required 
-                                       class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                       class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                             </div>
                             <div>
                                 <label class="block text-xs text-slate-400">Last Name</label>
                                 <input type="text" name="last_name" value="{{ user.last_name }}" required 
-                                       class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                       class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                             </div>
                             <div>
                                 <label class="block text-xs text-slate-400">Phone Number</label>
                                 <input type="text" name="phone_number" value="{{ user.phone_number }}" 
-                                       class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                       class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                             </div>
                             <div class="flex justify-center w-full px-4 py-4">
-                                <button type="submit" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                                <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 me-2">
                                     <i class="fa-solid fa-floppy-disk"></i> Save
                                 </button>
                             </div>
@@ -148,9 +148,9 @@
         <!-- Right Content Area -->
         <div class="space-y-4 lg:col-span-2">
             <!-- Security Settings -->
-            <div class="rounded-lg bg-slate-100 dark:bg-slate-700 shadow-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">
+            <div class="border rounded-lg shadow-xl bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">
                 <div class="p-6">
-                    <h3 class="text-lg font-bold mb-4">Security</h3>
+                    <h3 class="mb-4 text-lg font-bold">Security</h3>
                     <div class="space-y-4">
                         <!-- 2FA Toggle -->
                         <div class="flex items-center justify-between">
@@ -160,11 +160,13 @@
                             </div>
                             <form method="post" action="{% url 'toggle_2fa' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="{% if user.is_2fa_enabled %}text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% else %}text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% endif %}">
-                                    {% if user.is_2fa_enabled %}Disable 2FA{% else %}Enable 2FA{% endif %}
-                                </button>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" {% if user.is_2fa_enabled %}checked{% endif %} onChange="this.form.submit()">
+                                    <div class="relative w-10 h-5 bg-red-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-red-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-red-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                </label>
                             </form>
                         </div>
+
                         <!-- Email OTP Toggle -->
                         <div class="flex items-center justify-between">
                             <div>
@@ -173,9 +175,10 @@
                             </div>
                             <form method="post" action="{% url 'toggle_email_otp' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="{% if user.is_email_otp_enabled %}text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% else %}text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% endif %}">
-                                    {% if user.is_email_otp_enabled %}Disable Email OTP{% else %}Enable Email OTP{% endif %}
-                                </button>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" {% if user.is_email_otp_enabled %}checked{% endif %} onChange="this.form.submit()">
+                                    <div class="relative w-10 h-5 bg-red-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-red-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-red-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                </label>
                             </form>
                         </div>
                         <div class="flex items-center justify-between">
@@ -184,7 +187,7 @@
                                 <p class="text-sm text-slate-400">Login using facial recognition</p>
                             </div>
                             <a href="{% url 'face_training' %}" class="{% if user.is_face_login_enabled %}text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% else %}text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% endif %}">
-                                {% if user.is_face_login_enabled %}Retrain Face{% else %}Setup Face Login{% endif %}
+                                {% if user.is_face_login_enabled %}Retrain Face{% else %}Train Face{% endif %}
                             </a>
                         </div>
                         <!-- Password Change -->
@@ -195,7 +198,7 @@
                                     <h4 class="font-medium">Change Password</h4>
                                     <p class="text-sm text-slate-400">Update your password regularly to keep your account secure</p>
                                 </div>
-                                <button @click="showPasswordForm = !showPasswordForm" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                                <button @click="showPasswordForm = !showPasswordForm" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
                                     Change Password
                                 </button>
                             </div>
@@ -206,22 +209,22 @@
                                     <div>
                                         <label class="block text-slate-700 dark:text-white">Current Password</label>
                                         <input type="password" name="old_password" required 
-                                               class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                               class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                                     </div>
                                     <div>
                                         <label class="block text-slate-700 dark:text-white">New Password</label>
                                         <input type="password" name="new_password" required 
-                                               class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                               class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                                     </div>
                                     <div>
                                         <label class="block text-slate-700 dark:text-white">2FA Code</label>
                                         <input type="text" name="otp_code" required 
-                                               class="rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
+                                               class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                                     </div>
                                     <div class="flex space-x-2">
                                         {% include 'partials/buttons/success_button.html' with text="Save Password" icon="fa-solid fa-floppy-disk" type="submit" %}
                                         <button type="button" @click="showPasswordForm = false" 
-                                                class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2">
+                                                class="px-5 py-2 text-sm font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">
                                             Cancel
                                         </button>
                                     </div>
@@ -233,7 +236,7 @@
                 </div>
             </div>
             <!-- Tabs -->
-            <div class="rounded-lg bg-slate-100 dark:bg-slate-700 shadow-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white" 
+            <div class="border rounded-lg shadow-xl bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white" 
                 x-data="{ 
                     activeTab: 'activities',
                     searchQuery: '',
@@ -273,11 +276,11 @@
                 </div>
 
                 <!-- Activities Tab -->
-                <div x-show="activeTab === 'activities'" class="p-2 w-full">
+                <div x-show="activeTab === 'activities'" class="w-full p-2">
                     <div class="w-full overflow-x-auto">
                         <div class="w-full">
-                            <div class="rounded-lg w-full">
-                                <table class="w-full text-xs divide-y text-center">
+                            <div class="w-full rounded-lg">
+                                <table class="w-full text-xs text-center divide-y">
                                     <tbody class="divide-y" x-ref="logsContainer" id="activity-logs-content">
                                         {% for log in activity_logs %}
                                         <tr class="hover:bg-slate-400" x-show="!searchQuery || filteredLogs().includes($el)">
@@ -306,7 +309,7 @@
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="{% if user.is_staff %}4{% else %}3{% endif %}" class="px-2 py-4 sm:px-6 sm:py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                                            <td colspan="{% if user.is_staff %}4{% else %}3{% endif %}" class="px-2 py-4 text-sm text-center sm:px-6 sm:py-6 text-slate-500 dark:text-slate-400">
                                                 No activities found
                                             </td>
                                         </tr>

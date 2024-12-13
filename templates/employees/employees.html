@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-2 sm:p-4 max-w-full mx-auto">
-    <div class="mb-6 max-w-md mx-auto">
+<div class="max-w-full p-2 mx-auto sm:p-4">
+    <div class="max-w-md mx-auto mb-6">
         <input type="text" id="searchField" placeholder="Search employees..." class="w-full rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
     </div>
 
-    {% if user.is_staff and request.resolver_match.url_name == 'active_employees' %}
-    <div class="mb-4 flex justify-center gap-6">
+    <div class="{% if request.resolver_match.url_name == 'active_employees' %} mb-4 flex justify-center gap-6{% else %}hidden{% endif %}">
         <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" id="workingFilter" class="sr-only peer">
             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
@@ -20,23 +19,22 @@
             <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Not Working</span>
         </label>
     </div>
-    {% endif %}
 
     <section class="mb-12">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {% if employees %}
             {% for employee in employees %}
-            <div class="employee-card relative group bg-slate-50 dark:bg-slate-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300" 
+            <div class="relative overflow-hidden transition-shadow duration-300 rounded-lg shadow-lg employee-card group bg-slate-50 dark:bg-slate-700 hover:shadow-2xl" 
             data-name="{% if employee.user %}{{ employee.user.get_full_name|lower }}{% else %}{{ employee.get_full_name|lower }}{% endif %}" 
             data-position="{% if employee.position %}{{ employee.position|lower }}{% endif %}" 
             data-workshop="{% if employee.workshop %}{{ employee.workshop|lower }}{% endif %}" 
             data-id="{% if employee.number %}{{ employee.number }}{% endif %}" 
             data-user-id="{{ employee.user.id }}" 
             data-status="{{ employee.is_online|yesno:'online,offline' }}">
-                <div class="absolute top-1 left-2 z-10 flex items-center">
-                    <span class="flex h-3 w-3">
+                <div class="absolute z-10 flex items-center top-1 left-2">
+                    <span class="flex w-3 h-3">
                         {% if employee.is_online %}
-                            <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-600 opacity-90"></span>
+                            <span class="absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90"></span>
                         {% endif %}
                         <span class="status-indicator relative inline-flex rounded-full h-3 w-3 {% if employee.is_online %}bg-green-400{% else %}bg-red-500{% endif %}"></span>
                     </span>
@@ -44,18 +42,18 @@
                         {% if employee.is_online %}WORKING{% else %}NOT WORKING{% endif %}
                     </span>
                 </div>
-                <div class="relative w-40 h-40 mx-auto rounded-full mt-2 overflow-hidden">
+                <div class="relative w-40 h-40 mx-auto mt-2 overflow-hidden rounded-full">
                     {% if employee.user.profile_image %}
-                        <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-full h-full object-cover">
+                        <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="object-cover w-full h-full">
                     {% elif employee.profile_image %}
-                        <img src="{{ employee.profile_image.url }}" alt="{{ employee.get_full_name }}" class="w-full h-full object-cover">
+                        <img src="{{ employee.profile_image.url }}" alt="{{ employee.get_full_name }}" class="object-cover w-full h-full">
                     {% else %}
-                        <div class="w-full h-full bg-slate-200 flex items-center justify-center">
+                        <div class="flex items-center justify-center w-full h-full bg-slate-200">
                             <span class="text-gray-400">No Image</span>
                         </div>
                     {% endif %}
                 </div>
-                <div class="text-center p-4">
+                <div class="p-4 text-center">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                         {% if employee.user %}{{ employee.user.get_full_name }}{% else %}{{ employee.get_full_name }}{% endif %}
                     </h3>
@@ -67,47 +65,47 @@
                     <span class="px-2 py-1 rounded-full text-sm {{ status_class }}">{{ status }}</span>
                 </div>
                 {% if status == 'Inactive' %}
-                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-full bg-purple-500 transition-all duration-300">
-                    <button type="button" onclick="showActivateModal({{ employee.id }})" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Activate</button>
+                <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-full transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
+                    <button type="button" onclick="showActivateModal({{ employee.id }})" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Activate</button>
                 </div>
                 {% elif status == 'Active' %}
-                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-purple-500 transition-all duration-300">
+                <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="deactivate">
-                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Deactivate</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Deactivate</button>
                     </form>
                 </div>
-                <div class="absolute inset-y-0 right-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-red-500 transition-all duration-300">
+                <div class="absolute inset-y-0 right-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-red-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="archive">
-                        <button type="submit" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Archive</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Archive</button>
                     </form>
                 </div>
-                <div class="absolute inset-x-0 bottom-0 hidden group-hover:flex justify-center p-4 z-10">
-                    <a href="{% url 'employee_stats' %}?employee={{ employee.pk }}" class="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center">View Stats</a>
+                <div class="absolute inset-x-0 bottom-0 z-10 justify-center hidden p-4 group-hover:flex">
+                    <a href="{% url 'employee_stats' %}?employee={{ employee.pk }}" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80">View Stats</a>
                 </div>
                 {% elif status == 'Archived' %}
-                <div class="absolute inset-y-0 left-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-purple-500 transition-all duration-300">
+                <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="unarchive">
-                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Unarchive</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Unarchive</button>
                     </form>
                 </div>
-                <div class="absolute inset-y-0 right-0 hidden group-hover:flex items-center justify-center bg-opacity-40 w-1/2 bg-red-500 transition-all duration-300">
+                <div class="absolute inset-y-0 right-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-red-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
-                        <button type="submit" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">Delete</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Delete</button>
                     </form>
                 </div>
                 {% endif %}
             </div>
             {% endfor %}
             {% else %}  
-            <div class="col-span-full text-center py-12">
+            <div class="py-12 text-center col-span-full">
                 <div class="p-8">
                     <p class="text-xl text-slate-600 dark:text-slate-300">No employees found in this category</p>
                 </div>
