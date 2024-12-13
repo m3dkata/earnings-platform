@@ -211,8 +211,38 @@
             .then(html => {
                 document.getElementById('modalContainer').innerHTML = html;
                 document.getElementById('activateModal').classList.remove('hidden');
+                
+                const form = document.querySelector('#activateModal form');
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    fetch(form.getAttribute('action'), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: new FormData(form)
+                    })
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        try {
+                            const jsonData = JSON.parse(data);
+                            if (jsonData.status === 'error') {
+                                document.getElementById('modalContainer').innerHTML = jsonData.html;
+                                document.getElementById('activateModal').classList.remove('hidden');
+                            }
+                        } catch (e) {
+                            window.location.reload();
+                        }
+                    });
+                });
             });
-    }
+    }    
 
     workingFilter.addEventListener('change', function() {
         if (this.checked) {

@@ -6,6 +6,8 @@ from ..models import CustomUser
 from apps.employees.models import Employee
 from apps.employees.forms import EmployeeActivationForm
 from django.contrib.auth.models import Group
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 class BaseEmployeeListView(ListView):
     model = Employee
@@ -109,7 +111,13 @@ def toggle_employee_status(request, employee_id):
             user.save()
             messages.success(request, f"Employee {user.get_full_name()} activated successfully")
             return redirect(request.META.get('HTTP_REFERER', 'employee_list'))
-        return render(request, 'employees/activate_modal.html', {'form': form, 'user': user})
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'html': render_to_string('employees/activate_modal.html', 
+                                       {'form': form, 'user': user},
+                                       request=request)
+            })
     
     elif action == 'deactivate':
         user.is_active = False
