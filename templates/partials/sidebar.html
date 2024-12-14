@@ -3,7 +3,7 @@
        x-data="{ isHovered: false }"
        @mouseenter="isHovered = true"
        @mouseleave="isHovered = false"
-       class="fixed top-12 left-0 h-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white transition-transform duration-300 z-40 w-64 lg:w-14 group overflow-y-auto shadow-2xl no-scrollbar"
+       class="fixed left-0 z-40 w-64 h-full overflow-y-auto transition-transform duration-300 shadow-2xl top-12 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white lg:w-14 group no-scrollbar"
        :class="{
            'translate-x-0': sidebarOpen,
            '-translate-x-full': !sidebarOpen,
@@ -16,13 +16,13 @@
     <button @click="
         store.isPinned = !store.isPinned;
         localStorage.setItem('sidebarPinned', store.isPinned)"
-        class="hidden lg:flex absolute right-2 top-0 p-2 text-slate-800 dark:text-white hover:text-lime-500 dark:hover:text-lime-500 transition-all opacity-0 group-hover:opacity-100 text-xs"
+        class="absolute top-0 hidden p-2 text-xs transition-all opacity-0 lg:flex right-2 text-slate-800 dark:text-white hover:text-lime-500 dark:hover:text-lime-500 group-hover:opacity-100"
         :class="{'opacity-100': store.isPinned}">
         <i class="fa-solid" :class="store.isPinned ? 'fa-thumbtack rotate-45' : 'fa-thumbtack'"></i>
     </button>
 
 
-    <nav class="mt-6 flex flex-col gap-1 px-1 shadow-2xl min-h-screen text-sm">
+    <nav class="flex flex-col min-h-screen gap-1 px-1 mt-6 text-sm shadow-2xl">
         {% if user.is_authenticated %}
         <a href="/dashboard" class="{% if request.resolver_match.url_name == 'dashboard' %}text-purple-600 dark:text-lime-500{% endif %} flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
             <!-- Dashboard Icon -->
@@ -68,7 +68,7 @@
         </a>  
         <hr class="border-t border-slate-200 dark:border-slate-700">
         <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-800 dark:text-white uppercase"><i class="fa-solid fa-chart-line"></i></span>
+            <span class="text-xs uppercase text-slate-800 dark:text-white"><i class="fa-solid fa-chart-line"></i></span>
         </div>
         <a href="{% url 'employee_stats' %}" class="{% if request.resolver_match.url_name == 'employee_stats' %}text-purple-600 dark:text-lime-500{% endif %} flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,8 +90,8 @@
             <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)">Leaves</span>
         </a>
         {% else %}
-        <div class="h-screen flex items-center justify-center">
-            <div style="writing-mode: tb-rl;" class="text-3xl font-bold tracking-wider whitespace-nowrap transition-transform duration-300">
+        <div class="flex items-center justify-center h-screen">
+            <div style="writing-mode: tb-rl;" class="text-3xl font-bold tracking-wider transition-transform duration-300 whitespace-nowrap">
                 LOGIN TO CONTINUE
             </div>
         </div>
@@ -102,7 +102,7 @@
         <!-- Separator -->
         <hr class="border-t border-slate-200 dark:border-slate-700">
         <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-800 dark:text-white uppercase"><i class="fa-solid fa-users"></i></span>
+            <span class="text-xs uppercase text-slate-800 dark:text-white"><i class="fa-solid fa-users"></i></span>
         </div>
         <a href="{% url 'active_employees' %}" class="{% if request.resolver_match.url_name == 'active_employees' %}text-purple-600 dark:text-lime-500{% endif %} flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@
             <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)" class="flex items-center">
                 Active
                 {% if working_employees_count is not None %}
-                    <span class="ml-2 flex items-center">
+                    <span class="flex items-center ml-2">
                         <span class="text-green-500">{{ working_employees_count }}</span>
                         <span class="mx-1">/</span>
                         <span class="text-red-500">{{ active_employees_count|subtract:working_employees_count }}</span>
@@ -148,9 +148,9 @@
         <!-- Separator -->
         <hr class="border-t border-slate-200 dark:border-slate-700">
         <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-800 dark:text-white uppercase"><i class="fa-solid fa-user-tie"></i></span>
+            <span class="text-xs uppercase text-slate-800 dark:text-white"><i class="fa-solid fa-user-tie"></i></span>
         </div>
-        <a href="/admin" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
+        <a href="/admin" class="flex items-center p-2 space-x-3 transition-all rounded-lg hover:bg-lime-500 hover:text-slate-800">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -160,13 +160,13 @@
         <!-- Models Dropdown -->
         <!-- <div class="relative" x-data="{ modelMenuOpen: false }">
             <button @click="modelMenuOpen = !modelMenuOpen" 
-                    class="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
+                    class="flex items-center w-full p-2 space-x-3 transition-all rounded-lg hover:bg-lime-500 hover:text-slate-800">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)">
                     Models
-                    <i class="fa-solid fa-chevron-down ml-2"></i>
+                    <i class="ml-2 fa-solid fa-chevron-down"></i>
                 </span>
             </button>
             
@@ -177,7 +177,7 @@
                     {% url 'admin:'|add:model.app_label|add:'_'|add:model.model_name|add:'_changelist' as admin_url %}
                     {% if admin_url %}
                     <a href="{{ admin_url }}"
-                    class="block p-2 text-start rounded-lg hover:bg-lime-500 hover:text-slate-800 transition-all">
+                    class="block p-2 transition-all rounded-lg text-start hover:bg-lime-500 hover:text-slate-800">
                         <span x-show="sidebarOpen || (isHovered && window.innerWidth >= 1024) || (store.isPinned && window.innerWidth >= 1024)">
                             {{ model.name }}
                         </span>

@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showToast(message) {
         const toast = document.createElement('div');
-        toast.className = 'fixed bottom-5 right-5 bg-white dark:bg-slate-700 p-4 rounded-lg shadow-lg z-50';
+        toast.className = 'fixed z-50 p-4 bg-white rounded-lg shadow-lg bottom-5 right-5 dark:bg-slate-700';
         toast.innerHTML = message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 5000);

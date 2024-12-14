@@ -118,17 +118,6 @@
 <div id="modalContainer"></div>
 
 <script>
-    const ws = new WebSocket(
-        `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/user_activity/`
-    );    
-
-    ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        if (data.type === 'user_status') {
-            updateEmployeeStatus(data.user_id, data.status);
-        }
-    };
-
     function updateEmployeeStatus(userId, status) {
         const cards = document.querySelectorAll(`[data-user-id="${userId}"]`);
         cards.forEach(card => {

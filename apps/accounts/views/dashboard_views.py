@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count, Sum, Avg
+from apps.employees.models import Employee
 from apps.reports.models import Report
 from django.contrib import messages
 
@@ -93,7 +94,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'avg_percent': current_stats['avg_percent'],
             'percent_change': ((current_stats['avg_percent'] - last_month_stats['avg_percent']) / last_month_stats['avg_percent'] * 100) if last_month_stats['avg_percent'] else 0,
             'recent_reports': recent_reports.order_by('-date')[:10],
-            'chart_data': self.get_chart_data()
+            'chart_data': self.get_chart_data(),
+            'employees': Employee.objects.select_related('user').all()
         })
         
         return context
