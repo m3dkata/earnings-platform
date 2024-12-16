@@ -97,6 +97,7 @@
                 }
             };
         }
+
         function updateEmployeeStatus(userId, status) {
             const employeeCard = document.querySelector(`[data-user-id="${userId}"]`);
             if (employeeCard) {
@@ -105,34 +106,51 @@
                 
                 const statusIndicator = employeeCard.querySelector('.status-indicator');
                 const pingEffect = employeeCard.querySelector('.animate-ping');
+                const fallbackAvatar = employeeCard.querySelector('.flex.items-center.justify-center');
+                
+                employeeCard.setAttribute('data-status', status);
                 
                 if (status === 'online') {
-                    // Move to online section
                     onlineSection.appendChild(employeeCard);
                     statusIndicator.classList.remove('bg-red-500');
                     statusIndicator.classList.add('bg-green-400');
                     
-                    // Add ping effect if not exists
+                    if (fallbackAvatar) {
+                        fallbackAvatar.classList.remove('bg-red-500');
+                        fallbackAvatar.classList.add('bg-green-500');
+                    }
+                    
                     if (!pingEffect) {
                         const ping = document.createElement('span');
                         ping.className = 'absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90';
                         employeeCard.querySelector('.flex.w-3.h-3').prepend(ping);
                     }
                 } else {
-                    // Move to offline section
                     offlineSection.appendChild(employeeCard);
                     statusIndicator.classList.remove('bg-green-400');
                     statusIndicator.classList.add('bg-red-500');
                     
-                    // Remove ping effect if exists
+                    if (fallbackAvatar) {
+                        fallbackAvatar.classList.remove('bg-green-500');
+                        fallbackAvatar.classList.add('bg-red-500');
+                    }
+                    
                     if (pingEffect) {
                         pingEffect.remove();
                     }
                 }
+        
+                const onlineCount = document.querySelectorAll('[data-status="online"]').length;
+                const offlineCount = document.querySelectorAll('[data-status="offline"]').length;
+                
+                const onlineCountSpan = document.querySelector('h4.text-green-500 span');
+                const offlineCountSpan = document.querySelector('h4.text-red-500 span');
+                
+                if (onlineCountSpan) onlineCountSpan.textContent = onlineCount;
+                if (offlineCountSpan) offlineCountSpan.textContent = offlineCount;
             }
         }
-        
-        // Listen for WebSocket messages
+
         if (window.userActivityService && window.userActivityService.ws) {
             window.userActivityService.ws.onmessage = (e) => {
                 const data = JSON.parse(e.data);

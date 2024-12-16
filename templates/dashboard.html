@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block content %}
-<div class="flex">
+<div class="flex flex-col lg:flex-row">
     <!-- Main Dashboard Content -->
-    <div class="p-2 sm:p-4 max-w-full mx-auto {% if request.user.is_staff %}w-3/4{% else %}w-full{% endif %}">
+    <div class="p-2 sm:p-4 w-full {% if request.user.is_staff %}lg:w-3/4{% endif %}">
         <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Total Operations Card -->
             <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
@@ -118,8 +118,8 @@
                                     {{ report.status }}
                                 </span>
                             </td>
-                            <td class="">
-                                <a href="{% url 'report-update' report.id %}" class="px-2 py-1 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2"><i class="fa-regular fa-eye"></i></a>
+                            <td class="px-1 py-1">
+                                <a href="{% url 'report-update' report.id %}" class="px-2 py-1 text-xs font-medium text-center text-purple-500 "><i class="fa-regular fa-eye"></i></a>
                             </td>
                             {% empty %}
                             <td colspan="5" class="text-center text-gray-500">No reports found.</td>
@@ -132,62 +132,74 @@
     </div>
     {% if request.user.is_staff %}
         <!-- Online/Offline Users Panel -->
-        <div class="sticky top-0 right-0 w-1/4 h-screen overflow-y-auto shadow-xl bg-slate-50 dark:bg-slate-700">
-            <div class="p-4">
+        <div class="w-full p-2 overflow-y-auto sm:p-4 lg:w-1/4 lg:h-screen">
+            <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
                 <!-- Online Users -->
-                <div class="mb-6">
-                    <h4 class="mb-2 text-sm font-medium text-green-500">Online</h4>
-                    {% for employee in employees %}
-                        {% if employee.is_online %}
-                        <div class="flex items-center p-2 mb-2 space-x-2 rounded-lg employee-card hover:bg-slate-200 dark:hover:bg-slate-600" 
-                            data-user-id="{{ employee.user.id }}" 
-                            data-status="{{ employee.is_online|yesno:'online,offline' }}">
-                            <div class="relative flex items-center">
-                                <span class="flex w-3 h-3">
-                                    <span class="absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90"></span>
-                                    <span class="relative inline-flex w-3 h-3 bg-green-400 rounded-full status-indicator"></span>
-                                </span>
-                            </div>
-                            {% if employee.user.profile_image %}
-                                <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
-                            {% else %}
-                                <div class="flex items-center justify-center w-8 h-8 text-white bg-green-500 rounded-full">
-                                    {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                <div class="">
+                    <h4 class="mb-2 text-sm font-medium text-green-500">
+                        Working 
+                        <span class="ml-1 px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900 rounded-full">
+                        </span>
+                    </h4>
+                    <div class="grid grid-cols-1 gap-2 xs:grid-cols-2">
+                        {% for employee in employees %}
+                            {% if employee.is_online %}
+                            <div class="flex items-center p-2 mb-2 space-x-2 transition-all rounded-lg cursor-pointer employee-card hover:bg-slate-200 dark:hover:bg-slate-600" 
+                                data-user-id="{{ employee.user.id }}" 
+                                data-status="{{ employee.is_online|yesno:'online,offline' }}"
+                                onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
+                                <div class="relative flex items-center">
+                                    <span class="flex w-3 h-3">
+                                        <span class="absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90"></span>
+                                        <span class="relative inline-flex w-3 h-3 bg-green-400 rounded-full status-indicator"></span>
+                                    </span>
                                 </div>
+                                {% if employee.user.profile_image %}
+                                    <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
+                                {% else %}
+                                    <div class="flex items-center justify-center w-8 h-8 text-white bg-green-500 rounded-full">
+                                        {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                    </div>
+                                {% endif %}
+                                <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
+                            </div>
                             {% endif %}
-                            <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>    
                 </div>
-
                 <!-- Offline Users -->
                 <div>
-                    <h4 class="mb-2 text-sm font-medium text-red-500">Offline</h4>
-                    {% for employee in employees %}
-                        {% if not employee.is_online %}
-                        <div class="flex items-center p-2 mb-2 space-x-2 rounded-lg employee-card hover:bg-slate-200 dark:hover:bg-slate-600"
-                            data-user-id="{{ employee.user.id }}"
-                            data-status="{{ employee.is_online|yesno:'online,offline' }}">
-                            <div class="relative flex items-center">
-                                <span class="flex w-3 h-3">
-                                    <span class="relative inline-flex w-3 h-3 bg-red-500 rounded-full status-indicator"></span>
-                                </span>
-                            </div>
-                            {% if employee.user.profile_image %}
-                                <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
-                            {% else %}
-                                <div class="flex items-center justify-center w-8 h-8 text-white bg-red-500 rounded-full">
-                                    {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                    <h4 class="mb-2 text-sm font-medium text-red-500">
+                        Not working
+                        <span class="ml-1 px-2 py-0.5 text-xs bg-red-100 dark:bg-red-900 rounded-full">
+                        </span>
+                    </h4>
+                    <div class="grid grid-cols-1 gap-2 xs:grid-cols-2">
+                        {% for employee in employees %}
+                            {% if not employee.is_online %}
+                            <div class="flex items-center p-2 mb-2 space-x-2 transition-all rounded-lg cursor-pointer employee-card hover:bg-slate-200 dark:hover:bg-slate-600" 
+                                data-user-id="{{ employee.user.id }}" 
+                                data-status="{{ employee.is_online|yesno:'online,offline' }}"
+                                onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
+                                <div class="relative flex items-center">
+                                    <span class="flex w-3 h-3">
+                                        <span class="relative inline-flex w-3 h-3 bg-red-500 rounded-full status-indicator"></span>
+                                    </span>
                                 </div>
+                                {% if employee.user.profile_image %}
+                                    <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
+                                {% else %}
+                                    <div class="flex items-center justify-center w-8 h-8 text-white bg-red-500 rounded-full">
+                                        {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                    </div>
+                                {% endif %}
+                                <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
+                            </div>
                             {% endif %}
-                            <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>    
                 </div>
-
-            </div>
+            </div>    
         </div>
     {% endif %}
 </div>

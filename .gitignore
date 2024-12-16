@@ -7,3 +7,9 @@ __pycache__/
 .DS_Store
 .AppleDouble
 .LSOverride
+/apps/accounts/migrations
+/apps/employees/migrations
+/apps/notifications/migrations
+/apps/operations/migrations
+/apps/payrolls/migrations
+/apps/reports/migrations
