@@ -11,58 +11,59 @@ import numpy as np
 import json
 from ..models import FaceDescriptor
 
+
 @login_required
 def face_training(request):
     context = {
-        'models_url': settings.STATIC_URL + 'models/',
-        'has_existing': FaceDescriptor.objects.filter(user=request.user).exists()
+        "models_url": settings.STATIC_URL + "models/",
+        "has_existing": FaceDescriptor.objects.filter(user=request.user).exists(),
     }
-    return render(request, 'accounts/face_training.html', context)
+    return render(request, "accounts/face_training.html", context)
+
 
 @login_required
 @require_POST
 def save_face_descriptor(request):
     try:
         import json
+
         data = json.loads(request.body)
-        descriptor = data.get('descriptor')
-        
+        descriptor = data.get("descriptor")
+
         FaceDescriptor.objects.update_or_create(
-            user=request.user,
-            defaults={'descriptor': descriptor}
+            user=request.user, defaults={"descriptor": descriptor}
         )
         request.user.is_face_login_enabled = True
         request.user.save()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({"status": "success"})
     except Exception as e:
         messages.error(f"Face descriptor save error: {str(e)}")
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
 @csrf_protect
 def verify_face_login(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
-            descriptor = np.array(data.get('descriptor'))
-            
+            descriptor = np.array(data.get("descriptor"))
+
             all_face_descriptors = FaceDescriptor.objects.all()
             for face_desc in all_face_descriptors:
                 stored_descriptor = np.array(face_desc.descriptor)
                 distance = np.linalg.norm(descriptor - stored_descriptor)
-                
+
                 if distance < 0.6:
                     user = face_desc.user
                     login(request, user)
-                    return JsonResponse({
-                        'status': 'success',
-                        'redirect_url': reverse('dashboard')
-                    })
-            
-            return JsonResponse({'status': 'error', 'message': 'Face not recognized'})
-                
+                    return JsonResponse(
+                        {"status": "success", "redirect_url": reverse("dashboard")}
+                    )
+
+            return JsonResponse({"status": "error", "message": "Face not recognized"})
+
         except Exception as e:
             messages.error(f"Face verification error: {str(e)}")
-            return JsonResponse({'status': 'error', 'message': str(e)})
-            
-    return render(request, 'accounts/verify_face_login.html')
+            return JsonResponse({"status": "error", "message": str(e)})
+
+    return render(request, "accounts/verify_face_login.html")

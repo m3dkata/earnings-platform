@@ -1,204 +1,205 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
-<div class="flex flex-col lg:flex-row">
-    <!-- Main Dashboard Content -->
-    <div class="p-2 sm:p-4 w-full {% if request.user.is_staff %}lg:w-5/6{% endif %}">
-        <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2 lg:grid-cols-4">
-            <!-- Total Operations Card -->
-            <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Total Operations</p>
-                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations|floatformat:0 }}</h3>
+    <div class="flex flex-col lg:flex-row">
+        <!-- Main Dashboard Content -->
+        <div class="w-full p-4 {% if request.user.is_staff %}lg:w-5/6{% endif %}">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Total Operations Card -->
+                <div class="p-6 transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Total Operations</p>
+                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ total_operations|floatformat:0 }}</h3>
+                        </div>
+                        <div class="p-3 bg-purple-100 rounded-lg dark:bg-purple-900">
+                            <i class="text-lg text-purple-500 fa-solid fa-clipboard-list dark:text-purple-300"></i>
+                        </div>
                     </div>
-                    <div class="p-2 bg-purple-100 rounded-lg dark:bg-purple-900">
-                        <i class="text-purple-500 fa-solid fa-clipboard-list dark:text-purple-300"></i>
+                    <div class="mt-4 flex items-center text-sm {% if operations_change > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
+                        <i class="fa-solid fa-arrow-{% if operations_change > 0 %}up{% else %}down{% endif %} mr-1"></i>
+                        <span>{{ operations_change|floatformat:0 }} from last month</span>
                     </div>
                 </div>
-                <div class="mt-4 text-xs {% if operations_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
-                    <i class="fa-solid fa-arrow-{% if operations_change > 0 %}up{% else %}down{% endif %}"></i>
-                    {{ operations_change|floatformat:0 }} from last month
+                <!-- Earnings Card -->
+                <div class="p-6 transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Total Earnings</p>
+                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">${{ total_earnings|floatformat:2 }}</h3>
+                        </div>
+                        <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900">
+                            <i class="text-lg fa-solid fa-dollar-sign text-emerald-500 dark:text-emerald-300"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm {% if earnings_change > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
+                        <i class="fa-solid fa-arrow-{% if earnings_change > 0 %}up{% else %}down{% endif %} mr-1"></i>
+                        <span>{{ earnings_change|floatformat:2 }} from last month</span>
+                    </div>
+                </div>
+                <!-- Work Days Card -->
+                <div class="p-6 transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Work Days</p>
+                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ work_days }}</h3>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg dark:bg-blue-900">
+                            <i class="text-lg text-blue-500 fa-solid fa-calendar dark:text-blue-300"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm {% if work_days_change > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
+                        <i class="fa-solid fa-arrow-{% if work_days_change > 0 %}up{% else %}down{% endif %} mr-1"></i>
+                        <span>{{ work_days_change|floatformat:0 }} from last month</span>
+                    </div>
+                </div>
+                <!-- Average Percent Card -->
+                <div class="p-6 transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Average Percent</p>
+                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ avg_percent|floatformat:1 }}%</h3>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-900">
+                            <i class="text-lg fa-solid fa-percent text-amber-500 dark:text-amber-300"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm {% if percent_change > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
+                        <i class="fa-solid fa-arrow-{% if percent_change > 0 %}up{% else %}down{% endif %} mr-1"></i>
+                        <span>{{ percent_change|floatformat:1 }}% from last month</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Earnings Card -->
-            <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Total Earnings</p>
-                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">${{ total_earnings|floatformat:2 }}</h3>
-                    </div>
-                    <div class="p-2 rounded-lg bg-lime-100 dark:bg-lime-900">
-                        <i class="fa-solid fa-dollar-sign text-lime-500 dark:text-lime-300"></i>
-                    </div>
-                </div>
-                <div class="mt-4 text-xs {% if earnings_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
-                    <i class="fa-solid fa-arrow-{% if earnings_change > 0 %}up{% else %}down{% endif %}"></i>
-                    {{ earnings_change|floatformat:2 }} from last month
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-2">
+                <div class="p-6 overflow-hidden transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <h3 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Earnings</h3>
+                    <div id="earningsChart" class="w-full max-w-full h-80"></div>
+                </div>                
+                <div class="p-6 overflow-hidden transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                    <h3 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Performance</h3>
+                    <div id="performanceChart" class="w-full max-w-full h-80"></div>
                 </div>
             </div>
-
-            <!-- Work Days Card -->
-            <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Work Days</p>
-                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ work_days }}</h3>
-                    </div>
-                    <div class="p-2 bg-blue-100 rounded-lg dark:bg-blue-900">
-                        <i class="text-blue-500 fa-solid fa-calendar dark:text-blue-300"></i>
-                    </div>
+            <!-- Recent Reports Table -->
+            <div class="mt-8 transition-shadow bg-white border rounded-lg shadow-sm border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-700">
+                <div class="flex items-center justify-between p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Recent Reports</h3>
                 </div>
-                <div class="mt-4 text-xs {% if work_days_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
-                    <i class="fa-solid fa-arrow-{% if work_days_change > 0 %}up{% else %}down{% endif %}"></i>
-                    {{ work_days_change|floatformat:0 }} from last month
-                </div>
-            </div>
-
-            <!-- Average Percent Card -->
-            <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Average Percent</p>
-                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ avg_percent|floatformat:1 }}%</h3>
-                    </div>
-                    <div class="p-2 bg-orange-100 rounded-lg dark:bg-orange-900">
-                        <i class="text-orange-500 fa-solid fa-percent dark:text-orange-300"></i>
-                    </div>
-                </div>
-                <div class="mt-4 text-xs {% if percent_change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
-                    <i class="fa-solid fa-arrow-{% if percent_change > 0 %}up{% else %}down{% endif %}"></i>
-                    {{ percent_change|floatformat:1 }}% from last month
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts -->
-        <div class="grid grid-cols-1 gap-4 mb-8 lg:grid-cols-2">
-            <div class="p-4 overflow-hidden rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Earnings</h3>
-                <div id="earningsChart" class="w-full h-80"></div>
-            </div>
-        
-            <div class="p-4 overflow-hidden rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-                <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Performance</h3>
-                <div id="performanceChart" class="w-full h-80"></div>
-            </div>
-        </div>
-
-        <!-- Recent Reports Table -->
-        <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-white">Recent Reports</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                    <thead>
-                        <tr>
-                            <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">#</th>
-                            <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Employee</th>
-                            <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Date</th>
-                            <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Status</th>
-                            <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                        {% for report in recent_reports %}
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700">
-                            <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.pk }}</td>
-                            <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.employee }}</td>
-                            <td class="px-1 py-1 text-xs text-slate-800 dark:text-white">{{ report.date|date:"d-m-Y" }}</td>
-                            <td class="px-1 py-1">
-                                <span class="inline-flex items-start rounded-full px-2.5 py-0.5 text-xs font-medium 
-                                    {% if report.status == 'APPROVED' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300
-                                    {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300
-                                    {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300{% endif %}">
-                                    {{ report.status }}
-                                </span>
-                            </td>
-                            <td class="px-1 py-1">
-                                <a href="{% url 'report-update' report.id %}" class="px-2 py-1 text-xs font-medium text-center text-purple-500 "><i class="fa-regular fa-eye"></i></a>
-                            </td>
+                <div class="px-6 overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-slate-700">
+                                <th class="py-3 text-xs font-medium text-left text-slate-500 dark:text-slate-400">#</th>
+                                <th class="py-3 text-xs font-medium text-left text-slate-500 dark:text-slate-400">Employee</th>
+                                <th class="py-3 text-xs font-medium text-left text-slate-500 dark:text-slate-400">Date</th>
+                                <th class="py-3 text-xs font-medium text-left text-slate-500 dark:text-slate-400">Status</th>
+                                <th class="py-3 text-xs font-medium text-left text-slate-500 dark:text-slate-400"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                            {% for report in recent_reports %}
+                                <tr class="transition-colors group hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                    <td class="py-3 text-sm text-slate-900 dark:text-slate-200">{{ report.pk }}</td>
+                                    <td class="py-3 text-sm text-slate-900 dark:text-slate-200">{{ report.employee }}</td>
+                                    <td class="py-3 text-sm text-slate-900 dark:text-slate-200">{{ report.date|date:"d-m-Y" }}</td>
+                                    <td class="py-3">
+                                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if report.status == 'APPROVED' %}bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 {% elif report.status == 'REJECTED' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 {% else %}bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400{% endif %}">
+                                            {{ report.status }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3">
+                                        <a href="{% url 'report-update' report.id %}"
+                                           class="text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             {% empty %}
-                            <td colspan="5" class="text-center text-gray-500">No reports found.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                <tr>
+                                    <td colspan="5"
+                                        class="py-6 text-sm text-center text-slate-500 dark:text-slate-400">
+                                        No reports found
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+        {% if request.user.is_staff %}
+            <!-- Online/Offline Users Panel -->
+            <div class="w-full p-4 lg:w-1/6">
+                <div class="p-6 overflow-y-auto transition-shadow bg-white border rounded-lg shadow-sm no-scrollbar lg:h-screen border-slate-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-800">
+                    <!-- Online Users -->
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-1">
+                            {% for employee in employees %}
+                                {% if employee.is_online %}
+                                    <div class="p-2 transition-colors rounded-lg cursor-pointer employee-card group hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                                         data-user-id="{{ employee.user.id }}"
+                                         data-status="{{ employee.is_online|yesno:'online,offline' }}"
+                                         onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="relative flex items-center">
+                                                <span class="flex w-3 h-3">
+                                                    <span class="absolute inline-flex w-3 h-3 rounded-full opacity-75 animate-ping bg-emerald-500"></span>
+                                                    <span class="relative inline-flex w-3 h-3 rounded-full bg-emerald-500"></span>
+                                                </span>
+                                            </div>
+                                            {% if employee.user.profile_image %}
+                                                <img src="{{ employee.user.profile_image.url }}"
+                                                     alt="{{ employee.user.get_full_name }}"
+                                                     class="object-cover w-8 h-8 rounded-full">
+                                            {% else %}
+                                                <div class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-emerald-500">
+                                                    {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                                </div>
+                                            {% endif %}
+                                            <span class="text-sm font-medium text-slate-900 dark:text-white">{{ employee.user.get_full_name }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- Offline Users -->
+                    <div class="mt-6 space-y-4">
+                        <div class="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-1">
+                            {% for employee in employees %}
+                                {% if not employee.is_online %}
+                                    <div class="p-2 transition-colors rounded-lg cursor-pointer employee-card group hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                                         data-user-id="{{ employee.user.id }}"
+                                         data-status="{{ employee.is_online|yesno:'online,offline' }}"
+                                         onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="relative flex items-center">
+                                                <span class="flex w-3 h-3">
+                                                    <span class="relative inline-flex w-3 h-3 rounded-full bg-slate-400"></span>
+                                                </span>
+                                            </div>
+                                            {% if employee.user.profile_image %}
+                                                <img src="{{ employee.user.profile_image.url }}"
+                                                     alt="{{ employee.user.get_full_name }}"
+                                                     class="object-cover w-8 h-8 rounded-full">
+                                            {% else %}
+                                                <div class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-slate-400">
+                                                    {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
+                                                </div>
+                                            {% endif %}
+                                            <span class="text-sm font-medium text-slate-900 dark:text-white">{{ employee.user.get_full_name }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
-    {% if request.user.is_staff %}
-        <!-- Online/Offline Users Panel -->
-        <div class="w-full p-2 lg:pr-0 lg:w-1/6">
-            <div class="p-4 overflow-y-auto rounded-lg shadow-xl no-scrollbar lg:pr-0 lg:h-screen dark:bg-slate-800 hover:shadow-2xl">
-                <!-- Online Users -->
-                <div>
-                    <h4 class="mb-2 text-sm font-medium text-green-500">
-                    </h4>
-                    <div class="grid grid-cols-2 gap-1 md:grid-cols-2 lg:grid-cols-1">
-                        {% for employee in employees %}
-                            {% if employee.is_online %}
-                            <div class="flex items-center p-1 space-x-2 transition-all rounded-lg cursor-pointer employee-card hover:bg-slate-200 dark:hover:bg-slate-600" 
-                                data-user-id="{{ employee.user.id }}" 
-                                data-status="{{ employee.is_online|yesno:'online,offline' }}"
-                                onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
-                                <div class="relative flex items-center">
-                                    <span class="flex w-3 h-3">
-                                        <span class="absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90"></span>
-                                        <span class="relative inline-flex w-3 h-3 bg-green-400 rounded-full status-indicator"></span>
-                                    </span>
-                                </div>
-                                {% if employee.user.profile_image %}
-                                    <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
-                                {% else %}
-                                    <div class="flex items-center justify-center w-8 h-8 text-white bg-green-500 rounded-full">
-                                        {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
-                                    </div>
-                                {% endif %}
-                                <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>    
-                </div>
-                <!-- Offline Users -->
-                <div>
-                    <h4 class="mb-2 text-sm font-medium text-red-500">
-                    </h4>
-                    <div class="grid grid-cols-2 gap-1 md:grid-cols-2 lg:grid-cols-1">
-                        {% for employee in employees %}
-                            {% if not employee.is_online %}
-                            <div class="flex items-center p-1 space-x-2 transition-all rounded-lg cursor-pointer employee-card hover:bg-slate-200 dark:hover:bg-slate-600" 
-                                data-user-id="{{ employee.user.id }}" 
-                                data-status="{{ employee.is_online|yesno:'online,offline' }}"
-                                onclick="window.location.href='{% url 'employee_stats' %}?employee={{ employee.id }}'">
-                                <div class="relative flex items-center">
-                                    <span class="flex w-3 h-3">
-                                        <span class="relative inline-flex w-3 h-3 bg-red-500 rounded-full status-indicator"></span>
-                                    </span>
-                                </div>
-                                {% if employee.user.profile_image %}
-                                    <img src="{{ employee.user.profile_image.url }}" alt="{{ employee.user.get_full_name }}" class="w-8 h-8 rounded-full">
-                                {% else %}
-                                    <div class="flex items-center justify-center w-8 h-8 text-white bg-red-500 rounded-full">
-                                        {{ employee.user.first_name|first }}{{ employee.user.last_name|first }}
-                                    </div>
-                                {% endif %}
-                                <span class="text-sm text-slate-800 dark:text-white">{{ employee.user.get_full_name }}</span>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>    
-                </div>
-            </div>    
-        </div>
-    {% endif %}
-</div>
-<script>
-    const chartData = {{ chart_data|safe }};
-</script>
-<script src="{% static 'js/dashboard.js' %}"></script>
+    <script>const chartData = {{ chart_data|safe }};</script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

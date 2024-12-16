@@ -1,26 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-4">
-    <div class="bg-slate-100 dark:bg-slate-700 rounded-lg shadow-lg p-2">
-        <h2 class="text-2xl font-bold mb-6">Notifications</h2>
+<div class="container px-4 py-4 mx-auto">
+    <div class="p-6 bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Notifications</h2>
 
         <!-- Enhanced Filters -->
-        <div class="mb-6">
-            <form method="get" class="flex flex-wrap justify-center gap-4">
+        <div class="mt-6">
+            <form method="get" class="flex flex-wrap items-center justify-center gap-4">
                 <!-- Date Filter -->
                 <div class="flex items-center gap-2">
                     <input type="date" name="date_from" 
                            value="{{ request.GET.date_from }}"
-                           class="rounded-lg border-gray-300 dark:bg-slate-800">
-                    <span>to</span>
+                           class="px-3 py-2 text-sm bg-white rounded-lg border-slate-200 text-slate-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                    <span class="text-sm text-slate-600 dark:text-slate-400">to</span>
                     <input type="date" name="date_to"
                            value="{{ request.GET.date_to }}"
-                           class="rounded-lg border-gray-300 dark:bg-slate-800">
+                           class="px-3 py-2 text-sm bg-white rounded-lg border-slate-200 text-slate-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
-
                 <!-- Type Filter -->
-                <!-- <select name="type" class="rounded-lg border-gray-300 dark:bg-slate-800">
+                <!-- <select name="type" class="border-gray-300 rounded-lg dark:bg-slate-800">
                     <option value="">All Types</option>
                     {% for type in notification_types %}
                     <option value="{{ type }}" {% if request.GET.type == type %}selected{% endif %}>
@@ -28,26 +27,28 @@
                     </option>
                     {% endfor %}
                 </select> -->
-
                 <!-- Read/Unread Filter -->
-                <select name="read_status" class="rounded-lg border-gray-300 dark:bg-slate-800">
-                    <option value="">All Status</option>
+                <select name="read_status" 
+                        class="px-3 py-2 text-sm bg-white rounded-lg border-slate-200 text-slate-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                    <option value="">All</option>
                     <option value="read" {% if request.GET.read_status == 'read' %}selected{% endif %}>Read</option>
                     <option value="unread" {% if request.GET.read_status == 'unread' %}selected{% endif %}>Unread</option>
                 </select>
 
-                <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-full text-xs px-3 py-2 text-center me-2">
+                <button type="submit" 
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition-colors bg-purple-600 rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-700 dark:hover:bg-purple-600">
                     Apply Filters
                 </button>
                 
-                <a href="{% url 'notification_list' %}" class="text-slate-800 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:underline py-2">
+                <a href="{% url 'notification_list' %}" 
+                   class="text-sm text-slate-600 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400">
                     Clear Filters
                 </a>
             </form>
         </div>
 
-        <!-- Notifications List -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+        <!-- Notifications Grid -->
+        <div class="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-3">
             {% for notification in notifications %}
             <div data-notification-type="{{ notification.notification_type }}"
                  data-notification-id="{{ notification.pk }}"
@@ -59,31 +60,35 @@
                  data-url="{% url 'inactive_employees' %}"
                  {% endif %}
                  data-is-read="{{ notification.is_read|yesno:'true,false' }}"
-                 class="notification-list-item p-4 {% if notification.is_read %}bg-slate-200 dark:bg-slate-800{% else %}bg-purple-200 dark:bg-purple-900{% endif %} rounded-lg hover:shadow-lg transition-all cursor-pointer">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-sm">{{ notification.message }}</p>
-                        <small class="text-slate-500">{{ notification.created_at|date:"M d, Y H:i" }}</small>
-                    </div>
+                 class="notification-list-item cursor-pointer rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800 {% if not notification.is_read %}bg-purple-50 dark:bg-purple-900/20{% endif %}">
+                <div class="flex flex-col space-y-2">
+                    <p class="text-sm text-slate-900 dark:text-slate-100">{{ notification.message }}</p>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">{{ notification.created_at|date:"M d, Y H:i" }}</span>
                 </div>
             </div>
             {% empty %}
-            <p class="text-center text-slate-500 col-span-full">No notifications found</p>
+            <div class="text-sm text-center col-span-full text-slate-500 dark:text-slate-400">
+                No notifications found
+            </div>
             {% endfor %}
         </div>
 
         <!-- Pagination -->
         {% if is_paginated %}
-        <div class="mt-6 flex justify-center">
-            <nav class="flex space-x-2">
-                {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-600">Previous</a>
-                {% endif %}
-                
-                {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-600">Next</a>
-                {% endif %}
-            </nav>
+        <div class="flex justify-center mt-6 space-x-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" 
+               class="inline-flex items-center px-4 py-2 text-sm font-medium transition-colors rounded-lg bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600">
+                Previous
+            </a>
+            {% endif %}
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}"
+               class="inline-flex items-center px-4 py-2 text-sm font-medium transition-colors rounded-lg bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600">
+                Next
+            </a>
+            {% endif %}
         </div>
         {% endif %}
     </div>
@@ -114,5 +119,5 @@
             });
         });
     });
-    </script>
+</script>
 {% endblock %}

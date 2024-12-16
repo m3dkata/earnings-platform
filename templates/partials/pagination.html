@@ -1,10 +1,10 @@
 {% if page_obj.has_other_pages %}
-<div class="flex items-center justify-center mt-2">
+    <div class="flex items-center justify-center mt-4 space-x-2">
         {% for num in page_obj.paginator.page_range %}
             <button @click="currentPage = {{ num }}; fetchPage()"
-                class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-xs px-3 py-1 text-center me-2">
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-md {% if page_obj.number == num %}bg-purple-600 text-white hover:bg-purple-500{% else %}bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700{% endif %} text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                 {{ num }}
             </button>
         {% endfor %}
-</div>
+    </div>
 {% endif %}

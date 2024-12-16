@@ -21,19 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const createNotificationHTML = (notification, csrfToken) => `
-        <form method="post" action="/notifications/${notification.id}/read/" class="flex justify-between items-start">
+        <form method="post" action="/notifications/${notification.id}/read/" 
+            class="flex items-center justify-between space-x-4 rounded-lg p-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80 group">
             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
-            <div>
-                <p class="text-xs dark:text-white">${notification.message}</p>
-                <small class="text-xs text-slate-500 dark:text-white">${new Date(notification.created_at).toLocaleString()}</small>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-slate-900 dark:text-slate-100 group-hover:text-slate-900 dark:group-hover:text-slate-100">${notification.message}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 group-hover:text-slate-500 dark:group-hover:text-slate-400">${new Date(notification.created_at).toLocaleString()}</p>
             </div>
             ${!notification.is_read ? `
-                <button type="submit" class="text-lime-500 hover:text-lime-600">
+                <button type="submit" class="inline-flex h-8 w-8 items-center justify-center rounded-full text-emerald-500 hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-900/30">
                     <i class="fa-regular fa-eye"></i>
                 </button>
             ` : ''}
         </form>
     `;
+
 
     function debounce(func, wait) {
         let timeout;
@@ -52,9 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchNotifications() {
         fetch('/api/notifications/')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.json();
             })
             .then(data => {
@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 notificationsArray.forEach(notification => {
                     const notificationItem = document.createElement('div');
-                    notificationItem.className = `notification-item p-2 cursor-pointer ${
-                        notification.is_read ? 'bg-slate-100 dark:bg-slate-700' : 'bg-purple-400 dark:bg-slate-800'
-                    } border-b border-slate-200`;
-                    
-                    // console.log('Notification type:', notification.notification_type);
+                    notificationItem.className = `notification-item border-b border-slate-200 dark:border-slate-700 last:border-0 ${
+                        notification.is_read 
+                            ? 'bg-white dark:bg-slate-800' 
+                            : 'bg-purple-50 dark:bg-purple-900/20'
+                    }`;
                     
                     notificationItem.dataset.notificationType = notification.notification_type;
                     
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error fetching notifications:', error);
-                notificationList.innerHTML = '<div class="p-2 text-red-500">Failed to load notifications</div>';
+                notificationList.innerHTML = '<div class="p-4 text-sm text-red-500 dark:text-red-400">Failed to load notifications</div>';
             });
     }
 
@@ -117,10 +117,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showToast(message) {
         const toast = document.createElement('div');
-        toast.className = 'fixed z-50 p-4 bg-white rounded-lg shadow-lg bottom-5 right-5 dark:bg-slate-700';
-        toast.innerHTML = message;
+        toast.className = 'fixed z-50 flex items-center p-4 bg-white rounded-lg shadow-lg bottom-5 right-5 dark:bg-slate-800';
+        toast.innerHTML = `
+            <div class="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-500 dark:bg-purple-900 dark:text-purple-300">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+            <div class="text-sm font-normal text-slate-900 dark:text-slate-100">${message}</div>
+        `;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'transition-opacity');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
     }
 
     function initializeWebSocket() {

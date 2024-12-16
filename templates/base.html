@@ -101,46 +101,49 @@
         function updateEmployeeStatus(userId, status) {
             const employeeCard = document.querySelector(`[data-user-id="${userId}"]`);
             if (employeeCard) {
-                const onlineSection = document.querySelector('h4.text-green-500').parentElement;
-                const offlineSection = document.querySelector('h4.text-red-500').parentElement;
-                
-                const statusIndicator = employeeCard.querySelector('.status-indicator');
+                const statusIndicator = employeeCard.querySelector('.relative.inline-flex');
                 const pingEffect = employeeCard.querySelector('.animate-ping');
-                const fallbackAvatar = employeeCard.querySelector('.flex.items-center.justify-center');
+                const avatarContainer = employeeCard.querySelector('.flex.items-center.justify-center');
                 
                 employeeCard.setAttribute('data-status', status);
                 
                 if (status === 'online') {
-                    onlineSection.appendChild(employeeCard);
-                    statusIndicator.classList.remove('bg-red-500');
-                    statusIndicator.classList.add('bg-green-400');
+                    statusIndicator.classList.remove('bg-slate-400');
+                    statusIndicator.classList.add('bg-emerald-500');
                     
-                    if (fallbackAvatar) {
-                        fallbackAvatar.classList.remove('bg-red-500');
-                        fallbackAvatar.classList.add('bg-green-500');
+                    if (avatarContainer) {
+                        avatarContainer.classList.remove('bg-slate-400');
+                        avatarContainer.classList.add('bg-emerald-500');
                     }
                     
                     if (!pingEffect) {
                         const ping = document.createElement('span');
-                        ping.className = 'absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90';
-                        employeeCard.querySelector('.flex.w-3.h-3').prepend(ping);
+                        ping.className = 'absolute inline-flex h-3 w-3 animate-ping rounded-full bg-emerald-500 opacity-75';
+                        employeeCard.querySelector('.flex.h-3.w-3').prepend(ping);
                     }
                 } else {
-                    offlineSection.appendChild(employeeCard);
-                    statusIndicator.classList.remove('bg-green-400');
-                    statusIndicator.classList.add('bg-red-500');
+                    statusIndicator.classList.remove('bg-emerald-500');
+                    statusIndicator.classList.add('bg-slate-400');
                     
-                    if (fallbackAvatar) {
-                        fallbackAvatar.classList.remove('bg-green-500');
-                        fallbackAvatar.classList.add('bg-red-500');
+                    if (avatarContainer) {
+                        avatarContainer.classList.remove('bg-emerald-500');
+                        avatarContainer.classList.add('bg-slate-400');
                     }
                     
                     if (pingEffect) {
                         pingEffect.remove();
                     }
                 }
+                
+                const newParent = status === 'online' ? 
+                    document.querySelector('.grid.grid-cols-2.gap-2:first-of-type') : 
+                    document.querySelector('.grid.grid-cols-2.gap-2:last-of-type');
+                    
+                if (newParent) {
+                    newParent.appendChild(employeeCard);
+                }
             }
-        }
+        }        
 
         if (window.userActivityService && window.userActivityService.ws) {
             window.userActivityService.ws.onmessage = (e) => {

@@ -1,48 +1,75 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
-
 {% block content %}
-<div class="max-w-md p-8 mx-auto dark:bg-slate-800">
-    <h2 class="mb-6 text-2xl font-bold text-center text-slate-800 dark:text-slate-400">LOGIN</h2>
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-            <div>
-                <div class="flex">
-                    <span class="inline-flex items-center px-3 text-sm border text-slate-900 bg-slate-200 rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
-                        <i class="w-4 h-4 fa-solid fa-user text-slate-500 dark:text-slate-400"></i>
-                    </span>
-                    {{ form.username|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500"|attr:"placeholder:Username or Email" }}
-                </div>
-                <span class="block mt-1 text-sm text-center text-red-500">{{ form.username.errors }}</span>
+    <div class="flex items-center justify-center min-h-screen py-2 bg-slate-50 dark:bg-slate-900">
+        <div class="w-full max-w-md px-8 py-10 space-y-8 bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-800">
+            <div class="space-y-2">
+                <h2 class="text-3xl font-bold tracking-tight text-center text-slate-900 dark:text-slate-100">Welcome back</h2>
+                <p class="text-sm text-center text-slate-600 dark:text-slate-400">Enter your credentials to access your account</p>
             </div>
-            <div>
-                <div class="flex">
-                    <span class="inline-flex items-center px-3 text-sm border text-slate-900 bg-slate-200 rounded-e-0 border-slate-300 border-e-0 rounded-s-md dark:bg-slate-600 dark:text-slate-400 dark:border-slate-600">
-                      <i class="w-4 h-4 fa-solid fa-lock text-slate-500 dark:text-slate-400"></i>
-                    </span>
-                    {{ form.password|add_class:"rounded-none rounded-e-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 w-full text-sm border-slate-300 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500" }}
+            <form method="post" class="mt-8 space-y-6">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-700 dark:text-slate-200"
+                               for="{{ form.username.id_for_label }}">Username or Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="fa-solid fa-user text-slate-400"></i>
+                            </div>
+                            {{ form.username|add_class:"block w-full rounded-md border border-slate-200 bg-slate-50 pl-10 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"|attr:"placeholder:Username or Email" }}
+                        </div>
+                        {% if form.username.errors %}<p class="text-sm text-red-500">{{ form.username.errors }}</p>{% endif %}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-700 dark:text-slate-200"
+                               for="{{ form.password.id_for_label }}">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <i class="fa-solid fa-lock text-slate-400"></i>
+                            </div>
+                            {{ form.password|add_class:"block w-full rounded-md border border-slate-200 bg-slate-50 pl-10 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-purple-500 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" }}
+                        </div>
+                        {% if form.password.errors %}<p class="text-sm text-red-500">{{ form.password.errors }}</p>{% endif %}
+                    </div>
                 </div>
-                <span class="block mt-1 text-sm text-center text-red-500">{{ form.password.errors }}</span>
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="p-4 rounded-md bg-red-50 dark:bg-red-900/30">
+                            <p class="text-sm text-red-500 dark:text-red-400">{{ error }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="flex items-center justify-between">
+                    <a href="{% url 'password_reset' %}"
+                       class="text-sm font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400">Forgot password?</a>
+                </div>
+                <button type="submit"
+                        class="flex w-full items-center justify-center rounded-md bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-700 dark:hover:bg-purple-600">
+                    <i class="mr-2 fa-solid fa-right-to-bracket"></i>
+                    Sign in
+                </button>
+            </form>
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-200 dark:border-slate-700"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-slate-500 dark:bg-slate-800 dark:text-slate-400">Or continue with</span>
+                </div>
             </div>
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-                <div class="text-sm text-center text-red-500">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {% include 'partials/buttons/primary_button.html' with text="Login" icon="fa-solid fa-right-to-bracket" type="submit" %}
-    </form>
-    <div class="flex items-center justify-center mt-4">
-        <a href="{% url 'verify_face_login' %}" 
-           class="px-5 py-2 text-sm font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 me-2">
-            <i class="mr-2 fa-solid fa-face-smile"></i>
-            Login with FaceID
-        </a>
+            <div class="flex justify-center">
+                <a href="{% url 'verify_face_login' %}"
+                   class="inline-flex items-center rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-600">
+                    <i class="mr-2 fa-solid fa-face-smile"></i>
+                    Login with FaceID
+                </a>
+            </div>
+            <p class="mt-6 text-sm text-center text-slate-600 dark:text-slate-400">
+                Don't have an account?
+                <a href="{% url 'signup' %}"
+                   class="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400">Sign up</a>
+            </p>
+        </div>
     </div>
-    <p class="mt-4 text-center text-slate-800 dark:text-slate-400">
-        Don't have an account? <a href="{% url 'signup' %}" class="text-purple-700 dark:text-purple-500 hover:underline">Sign Up</a>
-    </p>
-    <p class="mt-4 text-center">
-        <a href="{% url 'password_reset' %}" class="text-red-500 hover:underline">Forgot Password?</a>
-    </p>
-</div>  
 {% endblock %}

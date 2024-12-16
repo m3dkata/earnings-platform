@@ -2,38 +2,51 @@
 {% load static %}
 {% block title %}Face Verification{% endblock %}
 {% block content %}
-<div class="min-h-full p-2">
-    <div class="rounded-lg bg-slate-100 dark:bg-slate-700 shadow-xl p-4 max-w-7xl mx-auto">
-        <div class="relative w-full aspect-video rounded-lg overflow-hidden">
-            <div class="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/80" id="loading-overlay">
-                <div class="text-white text-center">
-                    <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
-                    <p>Loading camera...</p>
+    <div class="flex items-center justify-center min-h-screen py-2 bg-slate-50 dark:bg-slate-900">
+        <div class="w-full max-w-4xl p-8 space-y-8 bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-800">
+            <div class="space-y-2">
+                <h2 class="text-3xl font-bold tracking-tight text-center text-slate-900 dark:text-slate-100">Face Verification</h2>
+                <p class="text-sm text-center text-slate-600 dark:text-slate-400">Follow the instructions to verify your identity</p>
+            </div>
+            <div class="relative w-full overflow-hidden rounded-lg aspect-video">
+                <!-- Loading Overlay -->
+                <div class="absolute inset-0 z-20 flex items-center justify-center bg-slate-900/90"
+                     id="loading-overlay">
+                    <div class="text-center text-white">
+                        <i class="mb-2 fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading camera...</p>
+                    </div>
                 </div>
-            </div>
-            <!-- Face Cutout Overlay -->
-            <div class="absolute inset-0 z-5">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full border-2 border-white bg-transparent ring-4 ring-purple-500/50">
-                    <!-- Guide marks -->
-                    <div class="absolute inset-0 border-4 border-transparent border-dashed"></div>
+                <!-- Face Cutout Overlay -->
+                <div class="absolute inset-0 z-5">
+                    <div class="absolute -translate-x-1/2 -translate-y-1/2 bg-transparent border-2 border-white rounded-full left-1/2 top-1/2 h-72 w-72 ring-4 ring-purple-500/50">
+                        <div class="absolute inset-0 border-4 border-transparent border-dashed"></div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="absolute bottom-4 left-0 right-0 text-center z-10">
-                <a href="{% url 'login' %}" class="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 font-medium rounded-full text-xs px-5 py-2 text-center me-2">
-                    <i class="fas fa-arrow-left mr-2"></i>Back to Login
-                </a>
-            </div>
-            <video id="video" class="w-full h-full object-cover" autoplay muted playsinline></video>
-            <div id="message-overlay" class="absolute top-4 left-0 right-0 flex items-center justify-center text-center p-4 z-10">
-                <span class="bg-slate-900/90 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-lg"></span>
+                <video id="video"
+                       class="object-cover w-full h-full"
+                       autoplay
+                       muted
+                       playsinline>
+                </video>
+                <!-- Message Overlay -->
+                <div id="message-overlay"
+                     class="absolute left-0 right-0 z-10 flex items-center justify-center p-4 text-center top-2">
+                    <span class="px-6 py-3 text-lg font-medium text-white rounded-lg shadow-lg bg-slate-900/90"></span>
+                </div>
+                <!-- Back Button -->
+                <div class="absolute left-0 right-0 z-10 text-center bottom-4">
+                    <a href="{% url 'login' %}"
+                       class="inline-flex items-center rounded-full bg-slate-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-600">
+                        <i class="mr-2 fas fa-arrow-left"></i>Back to Login
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script src="{% static 'js/face-api.js' %}"></script>
-<script>
+    <script src="{% static 'js/face-api.js' %}"></script>
+    <script>
+    // Original JavaScript remains unchanged to preserve functionality
     const loadingOverlay = document.getElementById('loading-overlay');
     const video = document.getElementById('video');
     const messageOverlay = document.getElementById('message-overlay').querySelector('span');
@@ -148,5 +161,5 @@
             }
         }, 1000);
     });
-</script>
+    </script>
 {% endblock %}
