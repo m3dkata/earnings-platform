@@ -122,32 +122,30 @@
         const cards = document.querySelectorAll(`[data-user-id="${userId}"]`);
         cards.forEach(card => {
             if (card) {
-                const statusContainer = card.querySelector('.flex.h-3.w-3');
+                const statusContainer = card.querySelector('.flex.w-3.h-3');
                 const indicator = card.querySelector('.status-indicator');
-                const statusText = card.querySelector('.text-xs');
+                const statusText = card.querySelector('.text-xs.font-bold');
                 
                 if (statusContainer && indicator && statusText) {
                     card.dataset.status = status;
                     
                     if (status === 'online') {
-                        // Add blinking effect
                         if (!statusContainer.querySelector('.animate-ping')) {
                             const pingSpan = document.createElement('span');
-                            pingSpan.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75';
+                            pingSpan.className = 'absolute inline-flex w-3 h-3 bg-green-600 rounded-full animate-ping opacity-90';
                             statusContainer.insertBefore(pingSpan, indicator);
                         }
                         indicator.classList.remove('bg-red-500');
-                        indicator.classList.add('bg-green-500');
+                        indicator.classList.add('bg-green-400');
                         statusText.textContent = 'WORKING';
                         statusText.classList.remove('text-red-500');
                         statusText.classList.add('text-green-500');
                     } else {
-                        // Remove blinking effect
                         const pingSpan = statusContainer.querySelector('.animate-ping');
                         if (pingSpan) {
                             pingSpan.remove();
                         }
-                        indicator.classList.remove('bg-green-500');
+                        indicator.classList.remove('bg-green-400');
                         indicator.classList.add('bg-red-500');
                         statusText.textContent = 'NOT WORKING';
                         statusText.classList.remove('text-green-500');
@@ -156,8 +154,8 @@
                 }
             }
         });
-    }    
-
+    }
+    
     const workingFilter = document.getElementById('workingFilter');
     const notWorkingFilter = document.getElementById('notWorkingFilter');
 
