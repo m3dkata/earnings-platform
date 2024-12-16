@@ -29,7 +29,7 @@
    
 <h4>
     <a href="https://exam.kidn3y.com">View Demo</a>
-  <span> · </span>
+    <span> · </span>
     <a href="https://github.com/m3dkata/earnings-platform/issues/">Request Feature</a>
   </h4>
 </div>
@@ -40,7 +40,9 @@
 | Role     | Username | Password    |
 |----------|----------|-------------|
 | Admin    | admin123 | admin123    |
-| Employee | employee0| password123 |                            |
+| Staff    | employee0| password123 | 
+| Moderator| employee1| password123 |
+| Employee | employee2| password123 |                            |
 
 </div>
 <br>
