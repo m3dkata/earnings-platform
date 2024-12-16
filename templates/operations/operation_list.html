@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-2 sm:p-4 max-w-full mx-auto">
+<div class="max-w-full p-2 mx-auto sm:p-4">
     <div class="flex justify-end mb-4">
         <a href="{% url 'operation_create' %}" 
-           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2.5 text-center">
+           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-full text-xs px-5 py-2.5 text-center">
             <i class="fa-solid fa-plus"></i> Operation
         </a>
     </div>
@@ -15,20 +15,20 @@
                value="{{ request.GET.search|default:'' }}"
                class="w-full rounded-lg bg-slate-50 border text-slate-900 focus:ring-purple-500 focus:border-purple-500 block flex-1 min-w-0 text-sm border-slate-300 p-2.5 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
     </form>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
         {% if operations %}
             {% for operation in operations %}
-                <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl p-4 hover:shadow-2xl transition-shadow">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="p-4 transition-shadow rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+                    <div class="flex items-start justify-between mb-4">
                         <span class="text-lg font-semibold text-slate-800 dark:text-white">{{ operation.code }}</span>
-                        <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-purple-800 bg-purple-100 rounded-full dark:bg-purple-900 dark:text-purple-300">
                             {{ operation.category }}
                         </span>
                     </div>
                     
-                    <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-3">{{ operation.name }}</h3>
+                    <h3 class="mb-3 text-sm font-bold text-slate-800 dark:text-white">{{ operation.name }}</h3>
                     
-                    <div class="space-y-2 mb-4">
+                    <div class="mb-4 space-y-2">
                         <div class="flex justify-between">
                             <span class="text-slate-600 dark:text-slate-400">Time:</span>
                             <span class="font-medium text-slate-800 dark:text-white">{{ operation.time }}</span>
@@ -41,18 +41,18 @@
                     
                     <div class="flex justify-end space-x-2">
                         <a href="{% url 'operation_edit' operation.pk %}" 
-                        class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+                        class="px-3 py-2 text-xs font-medium text-center text-gray-900 rounded-lg shadow-lg bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80">
                             <i class="fa-solid fa-pencil"></i>
                         </a>
                         <a href="{% url 'operation_delete' operation.pk %}" 
-                        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-3 py-2 text-center">
+                        class="px-3 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80">
                             <i class="fa-solid fa-trash-can"></i>
                         </a>
                     </div>
                 </div>
             {% endfor %}
         {% else %}  
-            <div class="col-span-full text-center py-12">
+            <div class="py-12 text-center col-span-full">
                 <div class="p-8">
                     <p class="text-xl text-slate-600 dark:text-slate-300">No operations are created yet</p>
                     <p class="text-xs text-slate-600 dark:text-slate-300">Before creating operation you must create rate first</p>

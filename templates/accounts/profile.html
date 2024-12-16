@@ -48,8 +48,8 @@
                         <div class="flex flex-col items-center">
                             {% if user.is_superuser %}
                             <button @click="window.location.href='{% url 'admin:index' %}'"
-                                    class="px-5 py-2 text-sm font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">
-                                    <i class="w-5 h-5 fa-solid fa-user-tie"></i>
+                                    class="px-3 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">
+                                    <i class="w-4 h-4 fa-solid fa-user-tie"></i>
                                 <span>Admin Panel</span>
                             </button>
                             {% endif %}
@@ -89,7 +89,7 @@
                 <div class="p-6">
                     <div class="flex items-center justify-center mb-4">
                             <div class="flex items-center space-x-2">
-                                <button @click="editMode = !editMode" class="inline-flex items-center justify-center px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
+                                <button @click="editMode = !editMode" class="inline-flex items-center justify-center px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
                                     <i class="w-4 h-4 mr-2 fa-solid fa-pen-to-square"></i>
                                     <span x-text="editMode ? 'Cancel' : 'Edit'"></span>
                                 </button>
@@ -134,7 +134,7 @@
                                        class="flex-1 block w-full min-w-0 p-2 text-sm border rounded-lg bg-slate-50 text-slate-900 focus:ring-purple-500 focus:border-purple-500 border-slate-300 dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-purple-500 dark:focus:border-purple-500">
                             </div>
                             <div class="flex justify-center w-full px-4 py-4">
-                                <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 me-2">
+                                <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 me-2">
                                     <i class="fa-solid fa-floppy-disk"></i> Save
                                 </button>
                             </div>
@@ -186,7 +186,7 @@
                                 <h4 class="font-medium">Face Recognition Login</h4>
                                 <p class="text-sm text-slate-400">Login using facial recognition</p>
                             </div>
-                            <a href="{% url 'face_training' %}" class="{% if user.is_face_login_enabled %}text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% else %}text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2 text-center me-2{% endif %}">
+                            <a href="{% url 'face_training' %}" class="{% if user.is_face_login_enabled %}text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-full text-sm px-5 py-2 text-center me-2{% else %}text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-full text-sm px-5 py-2 text-center me-2{% endif %}">
                                 {% if user.is_face_login_enabled %}Retrain Face{% else %}Train Face{% endif %}
                             </a>
                         </div>
@@ -198,7 +198,7 @@
                                     <h4 class="font-medium">Change Password</h4>
                                     <p class="text-sm text-slate-400">Update your password regularly to keep your account secure</p>
                                 </div>
-                                <button @click="showPasswordForm = !showPasswordForm" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
+                                <button @click="showPasswordForm = !showPasswordForm" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 me-2">
                                     Change Password
                                 </button>
                             </div>

@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-2 sm:p-4 max-w-full mx-auto">
+<div class="max-w-full p-2 mx-auto sm:p-4">
     <div class="flex justify-end mb-4">
         <a href="{% url 'rate_create' %}" 
-           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-xs px-5 py-2.5 text-center">
+           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-full text-xs px-5 py-2.5 text-center">
             <i class="fa-solid fa-plus"></i> Rate
         </a>
     </div>
 
     {% if rates %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {% for rate in rates %}
             {% include 'operations/partials/rate_row.html' %}
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-lg shadow-xl">
+    <div class="py-12 text-center bg-white rounded-lg shadow-xl dark:bg-slate-800">
         <div class="p-8">
-            <i class="fa-solid fa-clipboard-list text-4xl text-purple-500 mb-4"></i>
+            <i class="mb-4 text-4xl text-purple-500 fa-solid fa-clipboard-list"></i>
             <p class="text-xl text-slate-600 dark:text-slate-300">No rates are created yet</p>
         </div>
     </div>

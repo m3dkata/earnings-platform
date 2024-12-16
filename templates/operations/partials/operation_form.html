@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto p-4">
-    <form method="post" class="space-y-4 bg-slate-100 dark:bg-slate-800 p-6 rounded-lg shadow-xl">
+<div class="max-w-2xl p-4 mx-auto">
+    <form method="post" class="p-6 space-y-4 rounded-lg shadow-xl bg-slate-100 dark:bg-slate-800">
         {% csrf_token %}
         {% for field in form %}
         <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ field.label }}</label>
             {{ field }}
             {% if field.errors %}
-            <p class="text-red-500 text-xs italic">{{ field.errors.0 }}</p>
+            <p class="text-xs italic text-red-500">{{ field.errors.0 }}</p>
             {% endif %}
         </div>
         {% endfor %}
         
         <div class="flex justify-center space-x-2">
             <button type="submit" 
-                    class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+                    class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 me-2">
                 Save
             </button>
             <a href="{% url 'operations_list' %}" 
-               class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-5 py-2 text-center me-2">
+               class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">
                 Cancel
             </a>
         </div>

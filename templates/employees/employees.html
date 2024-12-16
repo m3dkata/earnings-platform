@@ -66,39 +66,39 @@
                 </div>
                 {% if status == 'Inactive' %}
                 <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-full transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
-                    <button type="button" onclick="showActivateModal({{ employee.id }})" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Activate</button>
+                    <button type="button" onclick="showActivateModal({{ employee.id }})" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Activate</button>
                 </div>
                 {% elif status == 'Active' %}
                 <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="deactivate">
-                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Deactivate</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Deactivate</button>
                     </form>
                 </div>
                 <div class="absolute inset-y-0 right-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-red-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="archive">
-                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Archive</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Archive</button>
                     </form>
                 </div>
                 <div class="absolute inset-x-0 bottom-0 z-10 justify-center hidden p-4 group-hover:flex">
-                    <a href="{% url 'employee_stats' %}?employee={{ employee.pk }}" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80">View Stats</a>
+                    <a href="{% url 'employee_stats' %}?employee={{ employee.pk }}" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80">View Stats</a>
                 </div>
                 {% elif status == 'Archived' %}
                 <div class="absolute inset-y-0 left-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-purple-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="unarchive">
-                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Unarchive</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 me-2">Unarchive</button>
                     </form>
                 </div>
                 <div class="absolute inset-y-0 right-0 items-center justify-center hidden w-1/2 transition-all duration-300 bg-red-500 group-hover:flex bg-opacity-40">
                     <form method="POST" action="{% url 'toggle_employee_status' employee.user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
-                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-lg shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Delete</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-medium text-center text-white rounded-full shadow-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 me-2">Delete</button>
                     </form>
                 </div>
                 {% endif %}
