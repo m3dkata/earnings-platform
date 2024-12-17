@@ -15,7 +15,15 @@ from django.db.transaction import on_commit
 from apps.employees.models import Employee
 from django.contrib.auth.models import Group
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from import_export import resources
+from import_export.admin import ImportExportMixin
 
+class CustomUserResource(resources.ModelResource):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email', 'first_name', 'last_name', 
+                 'is_active', 'is_employee', 'is_staff', 'phone_number')
+        export_order = fields
 
 class CustomAdminSite(admin.AdminSite):
     login_form = CustomLoginForm
@@ -39,7 +47,8 @@ class CustomAdminSite(admin.AdminSite):
         return super().login(request, extra_context)
 
 
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(ImportExportMixin, UserAdmin):
+    resource_class = CustomUserResource
     list_display = (
         "username",
         "email",
@@ -85,7 +94,8 @@ class EmployeeInline(admin.StackedInline):
     extra = 0
 
 
-class EmployeeAccount(UserAdmin):
+class EmployeeAccount(ImportExportMixin, UserAdmin):
+    resource_class = CustomUserResource
     list_display = (
         "username",
         "email",
@@ -127,7 +137,8 @@ class EmployeeAccount(UserAdmin):
         )
 
 
-class PendingAccount(UserAdmin):
+class PendingAccount(ImportExportMixin, UserAdmin):
+    resource_class = CustomUserResource
     list_display = (
         "username",
         "email",
@@ -167,7 +178,8 @@ class PendingAccount(UserAdmin):
         )
 
 
-class ArchivedAccount(UserAdmin):
+class ArchivedAccount(ImportExportMixin, UserAdmin):
+    resource_class = CustomUserResource
     list_display = (
         "username",
         "email",

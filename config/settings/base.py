@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_htmx',
     "corsheaders",
+    'import_export',
+
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     "corsheaders.middleware.CorsMiddleware",
+
 ]
 
 if env('BUILD_ENVIRONMENT') == 'development':
