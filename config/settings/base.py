@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.accounts.apps.AccountsConfig',
     'apps.employees.apps.EmployeesConfig',
     'apps.operations.apps.OperationsConfig',
+    'apps.overtime.apps.OvertimeConfig',
     'apps.reports.apps.ReportsConfig',
     'apps.payrolls.apps.PayrollsConfig',
     'apps.api.apps.ApiConfig',

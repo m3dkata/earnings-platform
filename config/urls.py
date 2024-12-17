@@ -29,6 +29,7 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('employees/', include('apps.employees.urls')),
     path('operations/', include('apps.operations.urls')),
+    path('overtime/', include('apps.overtime.urls')),
     path('reports/', include('apps.reports.urls')),
     path('payrolls/', include('apps.payrolls.urls')),
     path('notifications/', include('apps.notifications.urls')),
@@ -45,7 +46,7 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='accounts/password_reset_complete.html'
     ), name='password_reset_complete'),
-    
+
     re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
