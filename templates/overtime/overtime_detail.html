@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl p-4 mx-auto">
+    <div class="p-6 bg-white rounded-lg shadow-xl dark:bg-slate-800">
+        <h3 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">Overtime Request Details</h3>
+        
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                {% if is_staff %}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Employee</label>
+                    <p class="mt-1 text-slate-900 dark:text-white">{{ object.employee.user.get_full_name }}</p>
+                </div>
+                {% endif %}
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Date</label>
+                    <p class="mt-1 text-slate-900 dark:text-white">{{ object.date }}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full
+                        {% if object.status == 'approved' %}bg-green-100 text-green-800
+                        {% elif object.status == 'rejected' %}bg-red-100 text-red-800
+                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                        {{ object.status|title }}
+                    </span>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Start Time</label>
+                    <p class="mt-1 text-slate-900 dark:text-white">{{ object.start_time }}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">End Time</label>
+                    <p class="mt-1 text-slate-900 dark:text-white">{{ object.end_time }}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Hours</label>
+                    <p class="mt-1 text-slate-900 dark:text-white">{{ object.hours }}</p>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+                <p class="mt-1 text-slate-900 dark:text-white">{{ object.description }}</p>
+            </div>
+
+            <div class="flex justify-end mt-4 space-x-2">
+                {% if is_staff and object.status == 'pending' %}
+                    <form method="post" action="{% url 'overtime:approve' object.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-full hover:bg-green-700">
+                            Approve
+                        </button>
+                    </form>
+                    
+                    <form method="post" action="{% url 'overtime:reject' object.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700">
+                            Reject
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if not is_staff and object.status == 'pending' %}
+                    <a href="{% url 'overtime:update' object.pk %}" 
+                       class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-full hover:bg-purple-700">
+                        Edit
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'overtime:list' %}" 
+                   class="px-4 py-2 text-sm font-medium text-white rounded-full bg-slate-600 hover:bg-slate-700">
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

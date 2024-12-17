@@ -1,5 +1,8 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.urls import reverse
+
+from apps.accounts.models import CustomUser
 from .models import Notification
 from django.contrib.auth import get_user_model
 
@@ -102,3 +105,42 @@ class NotificationService:
                 "message": f"Your leave request for {leave.start_datetime.date()} has been {leave.status.lower()}",
             },
         )
+
+    @staticmethod
+    def notify_overtime_request(overtime_request):
+        staff_users = get_user_model().objects.filter(is_staff=True)
+        channel_layer = get_channel_layer()
+
+        for staff_user in staff_users:
+            Notification.objects.create(
+                recipient=staff_user,
+                notification_type="overtime_request",
+                message=f"New overtime request from {overtime_request.employee.user.get_full_name()}",
+            )
+
+            async_to_sync(channel_layer.group_send)(
+                f"user_{staff_user.id}",
+                {
+                    "type": "notification_message",
+                    "message": f"New overtime request from {overtime_request.employee.user.get_full_name()}",
+                },
+            )
+
+    @staticmethod
+    def notify_overtime_status_change(overtime_request):
+        channel_layer = get_channel_layer()
+
+        Notification.objects.create(
+            recipient=overtime_request.employee.user,
+            notification_type="overtime_status",
+            message=f"Your overtime request has been {overtime_request.status}",
+        )
+
+        async_to_sync(channel_layer.group_send)(
+            f"user_{overtime_request.employee.user.id}",
+            {
+                "type": "notification_message",
+                "message": f"Your overtime request for {overtime_request.date} has been {overtime_request.status}",
+            },
+        )
+

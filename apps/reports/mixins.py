@@ -13,8 +13,8 @@ class WorkHourRestrictionMixin:
                 return super().dispatch(request, *args, **kwargs)
 
         current_time = timezone.localtime().time()
-        workday_start = time(6, 0)
-        workday_end = time(23, 0)
+        workday_start = time(9, 0)
+        workday_end = time(17, 0)
 
         if current_time < workday_start or current_time > workday_end:
             messages.error(request, "You cannot add/edit Report outside worktime!")

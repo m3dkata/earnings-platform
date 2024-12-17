@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-full p-2 mx-auto sm:p-4">
+    {% if not is_staff %}
+    <div class="flex justify-end mb-4">
+        <a href="{% url 'overtime:create' %}" 
+           class="w-full sm:w-auto text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-full text-xs px-5 py-2.5 text-center">
+            <i class="fa-solid fa-plus"></i> Overtime
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="p-4 rounded-lg shadow-2xl bg-slate-100 dark:bg-slate-700">
+        <h2 class="mb-4 font-bold text-l">Overtime Requests</h2>
+        <div class="overflow-x-auto max-h-[350px] overflow-y-auto">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600">
+                <thead>
+                    <tr>
+                        {% if is_staff %}
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase sm:px-6 sm:py-1 text-slate-500">Employee</th>
+                        {% endif %}
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase sm:px-6 sm:py-1 text-slate-500">Date</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase sm:px-6 sm:py-1 text-slate-500">Hours</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase sm:px-6 sm:py-1 text-slate-500">Status</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase sm:px-6 sm:py-1 text-slate-500">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-600">
+                    {% for request in overtime_requests %}
+                    <tr>
+                        {% if is_staff %}
+                        <td class="px-1 py-1 text-xs sm:px-6 sm:py-1 sm:text-sm">{{ request.employee.user.get_full_name }}</td>
+                        {% endif %}
+                        <td class="px-1 py-1 text-xs sm:px-6 sm:py-1 sm:text-sm">{{ request.date }}</td>
+                        <td class="px-1 py-1 text-xs sm:px-6 sm:py-1 sm:text-sm">{{ request.hours }}</td>
+                        <td class="px-2 py-1 sm:px-6 sm:py-1 text-[8px] sm:text-sm">
+                            <span class="px-1 inline-flex text-[8px] sm:text-xs leading-5 font-semibold rounded-full
+                                {% if request.status == 'approved' %}bg-green-100 text-green-800
+                                {% elif request.status == 'rejected' %}bg-red-100 text-red-800
+                                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                {{ request.status|upper }}
+                            </span>
+                        </td>
+                        <td class="px-1 py-1 text-xs sm:px-6 sm:py-1 sm:text-sm">
+                            <a href="{% url 'overtime:detail' request.pk %}" 
+                               class="text-purple-600 uppercase hover:text-purple-900 hover:underline">
+                               <i class="fa-solid fa-eye"></i>
+                            </a>
+                            
+                            {% if not is_staff and request.status == 'pending' %}
+                                <a href="{% url 'overtime:update' request.pk %}" 
+                                   class="ml-2 text-purple-600 uppercase hover:text-purple-900 hover:underline">
+                                   <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            {% endif %}
+                            
+                            {% if is_staff %}
+                                {% if request.status == 'pending' %}
+                                    <form method="post" action="{% url 'overtime:approve' request.pk %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="ml-2 text-green-600 uppercase hover:text-green-900 hover:underline">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'overtime:reject' request.pk %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="ml-2 text-red-600 uppercase hover:text-red-900 hover:underline">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                <a href="{% url 'overtime:delete' request.pk %}" 
+                                   class="ml-2 text-red-600 uppercase hover:text-red-900 hover:underline">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-2 py-4 text-sm text-center sm:px-6 sm:py-6 text-slate-500 dark:text-slate-400">
+                            No overtime requests found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
