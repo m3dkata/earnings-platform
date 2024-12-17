@@ -13,3 +13,4 @@ __pycache__/
 /apps/operations/migrations
 /apps/payrolls/migrations
 /apps/reports/migrations
+/apps/overtime/migrations
