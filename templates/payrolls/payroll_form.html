@@ -1,43 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-bold mb-6 text-center">
+<div class="max-w-6xl px-4 py-8 mx-auto">
+    <div class="p-6 rounded-lg shadow-md bg-slate-50 dark:bg-slate-700">
+        <h2 class="mb-6 text-xl font-bold text-center">
             {% if object %}Edit{% else %}Create{% endif %} Payroll
         </h2>
         {% if object %}
-        <div class="mb-6 grid grid-cols-1 gap-4 text-center">
+        <div class="grid grid-cols-1 gap-4 mb-6 text-center">
             <div>
-                <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Employee</label>
+                <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Employee</label>
                 <p class="text-xl font-bold text-gray-800 dark:text-white">{{ object.employee }}</p>
-                <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Month</label>
-                <p class="text-l text-gray-800 dark:text-white">{{ object.month|date:"F Y" }}</p>
-                <hr class="border-t border-slate-200 my-2">
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Month</label>
+                <p class="text-gray-800 text-l dark:text-white">{{ object.month|date:"F Y" }}</p>
+                <hr class="my-2 border-t border-slate-200">
+                <div class="grid grid-cols-2 gap-4 text-center sm:grid-cols-3">
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Work days</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.work_days }}</p>    
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Work days</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.work_days }}</p>    
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Percent</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.percent }}</p>
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Percent</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.percent }}</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Earnings</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.earnings }}</p>
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Earnings</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.earnings }}</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Attendance bonus</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.attendance_bonus }}</p>    
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Attendance bonus</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.attendance_bonus }}</p>    
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Vacations days</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.vacation_amount }}</p>
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Vacations days</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.vacation_amount }}</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Sick days</label>
-                        <p class="text-l text-gray-800 dark:text-white">{{ object.sick_amount }}</p>    
+                        <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Sick days</label>
+                        <p class="text-gray-800 text-l dark:text-white">{{ object.sick_amount }}</p>    
                     </div>
                 </div>
             </div>
@@ -46,28 +46,28 @@
         <form method="post" class="space-y-4">
             {% csrf_token %}
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {% for field in form %}
                 <div class="form-group">
-                    <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">
+                    <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">
                         {{ field.label }}
                     </label>
                     {{ field }}
                     {% if field.errors %}
-                        <span class="text-red-500 text-sm">{{ field.errors.0 }}</span>
+                        <span class="text-sm text-red-500">{{ field.errors.0 }}</span>
                     {% endif %}
                 </div>
                 {% endfor %}
             </div>
-            <div class="mb-6 grid grid-cols-1 gap-4 text-center">
+            <div class="grid grid-cols-1 gap-4 mb-6 text-center">
                 <div>
-                    <label class="block text-xs font-medium text-gray-400 dark:text-slate-500 uppercase">Cash payment</label>
-                    <p class="text-l text-gray-800 dark:text-white">{{ object.cash_payment }}</p>    
+                    <label class="block text-xs font-medium text-gray-400 uppercase dark:text-slate-500">Cash payment</label>
+                    <p class="text-gray-800 text-l dark:text-white">{{ object.cash_payment }}</p>    
                 </div>
             </div>
-            <div class="flex justify-center space-x-4 mt-6">
-                <a href="{% url 'payroll-list' %}" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-full text-xs px-5 py-2 text-center me-2">Cancel</a>
-                <button type="submit" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-full text-xs px-5 py-2 text-center me-2">Save</button>
+            <div class="flex justify-center mt-6 space-x-4">
+                <a href="{% url 'payroll-list' %}" class="inline-flex items-center rounded-full bg-slate-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:bg-slate-700 dark:hover:bg-slate-600">Cancel</a>
+                <button type="submit" class="inline-flex items-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600">Save</button>
             </div>
         </form>
     </div>

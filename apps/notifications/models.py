@@ -3,11 +3,12 @@ from django.conf import settings
 
 from apps.reports.models import Report
 
+
 class Notification(models.Model):
     NOTIFICATION_TYPES = (
-        ('registration', 'New User Registration'),
-        ('report_submission', 'Report Submission'),
-        ('report_status', 'Report Status Change'),
+        ("registration", "New User Registration"),
+        ("report_submission", "Report Submission"),
+        ("report_status", "Report Status Change"),
     )
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -18,4 +19,4 @@ class Notification(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]

@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView, View, ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
 from django.urls import reverse_lazy
@@ -16,155 +15,170 @@ from .forms import LeaveFilterForm
 from apps.notifications.services import NotificationService
 from apps.payrolls.tasks import generate_payroll
 
+
 class LeaveRequestView(LoginRequiredMixin, CreateView):
     model = Leave
     form_class = LeaveRequestForm
-    template_name = 'employees/leave_request.html'
-    success_url = reverse_lazy('leave_list')
-    
+    template_name = "employees/leave_request.html"
+    success_url = reverse_lazy("leave_list")
+
     def form_valid(self, form):
         form.instance.employee = self.request.user.employee_profile
-        messages.success(self.request, 'Leave request submitted successfully')
+        messages.success(self.request, "Leave request submitted successfully")
         return super().form_valid(form)
 
+
 class ApproveLeaveView(PermissionRequiredMixin, View):
-    permission_required = 'employees.can_approve_leave'
+    permission_required = "employees.can_approve_leave"
     raise_exception = True
-    
+
     def post(self, request, leave_id):
         leave = get_object_or_404(Leave, id=leave_id)
-        leave.status = 'APPROVED'
+        leave.status = "APPROVED"
         leave.save()
-        
+
         from apps.payrolls.models import Payroll
+
         payroll, created = Payroll.objects.get_or_create(
-            employee=leave.employee,
-            month=leave.start_datetime.date().replace(day=1)
+            employee=leave.employee, month=leave.start_datetime.date().replace(day=1)
         )
-        
+
         days = leave.duration_in_days()
         if days > 0:
-            if leave.leave_type == 'VACATION':
+            if leave.leave_type == "VACATION":
                 payroll.vacation_days += days
             else:
                 payroll.sick_days += days
             payroll.save()
             generate_payroll.delay(
-                leave.employee.id,
-                leave.start_datetime.strftime('%Y-%m-%d')
+                leave.employee.id, leave.start_datetime.strftime("%Y-%m-%d")
             )
-        
+
         NotificationService.notify_leave_status(leave)
-        messages.success(request, f'Leave request for {leave.employee} has been approved')
+        messages.success(
+            request, f"Leave request for {leave.employee} has been approved"
+        )
         return HttpResponse(status=204)
 
+
 class RejectLeaveView(PermissionRequiredMixin, View):
-    permission_required = 'employees.can_reject_leave'
+    permission_required = "employees.can_reject_leave"
     raise_exception = True
-    
+
     def post(self, request, leave_id):
         leave = get_object_or_404(Leave, id=leave_id)
-        leave.status = 'REJECTED'
+        leave.status = "REJECTED"
         leave.save()
-        
+
         NotificationService.notify_leave_status(leave)
-        messages.success(request, f'Leave request for {leave.employee} has been rejected')
+        messages.success(
+            request, f"Leave request for {leave.employee} has been rejected"
+        )
         return HttpResponse(status=204)
+
 
 class LeaveListView(LoginRequiredMixin, ListView):
     model = Leave
-    template_name = 'employees/leave_list.html'
-    context_object_name = 'leaves'
-    
+    template_name = "employees/leave_list.html"
+    context_object_name = "leaves"
+
     def get_queryset(self):
-        queryset = Leave.objects.select_related('employee__user').order_by('-created_at')
-        
-        month = self.request.GET.get('month')
+        queryset = Leave.objects.select_related("employee__user").order_by(
+            "-created_at"
+        )
+
+        month = self.request.GET.get("month")
         if month:
-            date = datetime.strptime(month, '%Y-%m')
+            date = datetime.strptime(month, "%Y-%m")
             queryset = queryset.filter(
-                created_at__year=date.year,
-                created_at__month=date.month
+                created_at__year=date.year, created_at__month=date.month
             )
-        
-        if not self.request.user.has_perm('employees.can_approve_leave'):
+
+        if not self.request.user.has_perm("employees.can_approve_leave"):
             queryset = queryset.filter(employee__user=self.request.user)
         else:
-            employee_id = self.request.GET.get('employee')
+            employee_id = self.request.GET.get("employee")
             if employee_id:
                 queryset = queryset.filter(employee_id=employee_id)
-                
+
         return queryset
-        
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filter_form'] = LeaveFilterForm(self.request.GET)
-        if self.request.user.has_perm('employees.can_approve_leave'):
-            context['employees'] = Employee.objects.select_related('user').all()
+        context["filter_form"] = LeaveFilterForm(self.request.GET)
+        if self.request.user.has_perm("employees.can_approve_leave"):
+            context["employees"] = Employee.objects.select_related("user").all()
         return context
 
+
 class EmployeeStatsView(LoginRequiredMixin, TemplateView):
-    template_name = 'employees/employee_stats.html'
+    template_name = "employees/employee_stats.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        period = self.request.GET.get('period', 'week')
-        employee_id = self.request.GET.get('employee')
-        
+
+        period = self.request.GET.get("period", "week")
+        employee_id = self.request.GET.get("employee")
+
         if self.request.user.is_staff:
-            employees = Employee.objects.select_related('user').all()
+            employees = Employee.objects.select_related("user").all()
             if employee_id:
                 employee = employees.get(id=employee_id)
             else:
                 employee = employees.first()
         else:
-            employee = Employee.objects.select_related('user').get(user=self.request.user)
+            employee = Employee.objects.select_related("user").get(
+                user=self.request.user
+            )
             employees = None
-            
+
         today = timezone.now()
-        if period == 'week':
+        if period == "week":
             start_date = today - timedelta(days=7)
-        elif period == 'month':
+        elif period == "month":
             start_date = today - timedelta(days=30)
-        elif period == 'year':
+        elif period == "year":
             start_date = today - timedelta(days=365)
         else:
             start_date = today - timedelta(days=7)
 
-        operations = ReportOperation.objects.select_related(
-            'operation',
-            'report',
-            'report__employee'
-        ).filter(
-            report__employee=employee,
-            report__date__gte=start_date
-        ).order_by('operation__code')
+        operations = (
+            ReportOperation.objects.select_related(
+                "operation", "report", "report__employee"
+            )
+            .filter(report__employee=employee, report__date__gte=start_date)
+            .order_by("operation__code")
+        )
 
-        reports = Report.objects.select_related('employee').filter(
-            employee=employee,
-            date__gte=start_date
-        ).order_by('date')
+        reports = (
+            Report.objects.select_related("employee")
+            .filter(employee=employee, date__gte=start_date)
+            .order_by("date")
+        )
 
         chart_data = []
         for operation in operations:
-            chart_data.append({
-                'date': operation.report.date.strftime('%Y-%m-%d'),
-                'operation_code': operation.operation.code,
-                'quantity': operation.quantity,
-                'percent': float(operation.percent),
-                'sum': float(operation.sum)
-            })
+            chart_data.append(
+                {
+                    "date": operation.report.date.strftime("%Y-%m-%d"),
+                    "operation_code": operation.operation.code,
+                    "quantity": operation.quantity,
+                    "percent": float(operation.percent),
+                    "sum": float(operation.sum),
+                }
+            )
 
-        context.update({
-            'period': period,
-            'employees': employees,
-            'selected_employee': employee,
-            'operations': operations,
-            'reports': reports,
-            'chart_data': chart_data,
-            'total_operations': operations.count(),
-            'total_reports': reports.count(),
-        })
-        
+        context.update(
+            {
+                "period": period,
+                "employees": employees,
+                "selected_employee": employee,
+                "operations": operations,
+                "reports": reports,
+                "chart_data": chart_data,
+                "total_operations": operations.count(),
+                "total_reports": reports.count(),
+            }
+        )
+
         return context

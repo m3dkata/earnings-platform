@@ -6,10 +6,11 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from apps.reports.models import Report, ReportOperation
+from apps.reports.models import Report
 from apps.api.serializers.reports import ReportSerializer
 from apps.reports.mixins import WorkHourRestrictionMixin
 from apps.notifications.services import NotificationService
+
 
 class ReportListCreateAPIView(WorkHourRestrictionMixin, APIView):
     permission_classes = [IsAuthenticated]
@@ -17,10 +18,16 @@ class ReportListCreateAPIView(WorkHourRestrictionMixin, APIView):
     @extend_schema(responses={200: ReportSerializer(many=True)})
     def get(self, request):
         if request.user.is_staff:
-            reports = Report.objects.select_related('employee__user').prefetch_related('reportoperation_set__operation').all()
+            reports = (
+                Report.objects.select_related("employee__user")
+                .prefetch_related("reportoperation_set__operation")
+                .all()
+            )
         else:
-            reports = Report.objects.select_related('employee__user').prefetch_related('reportoperation_set__operation').filter(
-                employee__user=request.user
+            reports = (
+                Report.objects.select_related("employee__user")
+                .prefetch_related("reportoperation_set__operation")
+                .filter(employee__user=request.user)
             )
         serializer = ReportSerializer(reports, many=True)
         return Response(serializer.data)
@@ -31,14 +38,19 @@ class ReportListCreateAPIView(WorkHourRestrictionMixin, APIView):
         if serializer.is_valid():
             with transaction.atomic():
                 if not request.user.is_staff:
-                    serializer.validated_data['employee'] = request.user.employee_profile
+                    serializer.validated_data["employee"] = (
+                        request.user.employee_profile
+                    )
                 report = serializer.save()
-                report.status = 'SUBMITTED'
+                report.status = "SUBMITTED"
                 report.save()
-                
+
                 NotificationService.notify_staff_new_report(report)
-                return Response(ReportSerializer(report).data, status=status.HTTP_201_CREATED)
+                return Response(
+                    ReportSerializer(report).data, status=status.HTTP_201_CREATED
+                )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ReportDetailAPIView(WorkHourRestrictionMixin, APIView):
     permission_classes = [IsAuthenticated]
@@ -58,14 +70,14 @@ class ReportDetailAPIView(WorkHourRestrictionMixin, APIView):
     @extend_schema(request=ReportSerializer, responses={200: ReportSerializer})
     def put(self, request, pk):
         report = self.get_object(pk, request.user)
-        
+
         if request.user.is_staff:
-            if 'status' in request.data:
-                report.status = request.data['status']
+            if "status" in request.data:
+                report.status = request.data["status"]
                 report.save()
                 NotificationService.notify_report_status(report, report.status)
                 return Response(ReportSerializer(report).data)
-        
+
         serializer = ReportSerializer(report, data=request.data)
         if serializer.is_valid():
             with transaction.atomic():
