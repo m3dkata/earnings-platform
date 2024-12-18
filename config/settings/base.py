@@ -30,6 +30,7 @@ TAILWIND_APP_NAME='theme'
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,7 +60,6 @@ INSTALLED_APPS = [
     'django_htmx',
     "corsheaders",
     'import_export',
-
 ]
 
 MIDDLEWARE = [
@@ -75,7 +75,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-
 ]
 
 if env('BUILD_ENVIRONMENT') == 'development':
@@ -277,3 +276,131 @@ CACHE_TIMEOUT = 300
 # Site settings
 PROTOCOL = env('PROTOCOL')
 DOMAIN = env('DOMAIN')
+
+JAZZMIN_SETTINGS = {
+    "site_title": "EARNINGS Platform",
+    "site_header": "EARNINGS",
+    "site_brand": "EARNINGS",
+    "site_logo": "img/logo.png",
+    "login_logo": "img/logo.png",
+    "login_logo_dark": "img/logo.png",
+    "site_logo_classes": "img-circle",
+    "site_icon": "img/logo.png",
+    "welcome_sign": "Welcome to EARNINGS Platform",
+    "copyright": "EARNINGS Platform",
+    "search_model": "employees.Employee",
+    "search_fields": ["number", "position", "workshop__name", "user__first_name", "user__last_name", "user__username", "user__email"],
+    "user_avatar": "profile_image",
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index"},
+        {"app": "accounts"},
+        {"app": "employees"},
+        {"app": "payrolls"},
+        {"app": "operations"},
+        {"app": "overtime"},
+        {"app": "reports"},
+        {"app": "notifications"},
+        {"name": "API", "url": "/api/schema/redoc/", "new_window": True},
+    ],
+    "usermenu_links": [
+        {"name": "View Site", "url": "/", "new_window": True}
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": False,
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": [
+        "accounts",
+        "employees",
+        "reports",
+        "payrolls",
+        "operations",
+        "overtime",
+    ],
+    "icons": {
+        # Main apps
+        "accounts": "fas fa-users-cog",
+        "accounts.CustomUser": "fas fa-user",
+        "accounts.ArchivedUser": "fas fa-user-slash",
+        "accounts.EmployeeUser": "fas fa-user-tie",
+        "accounts.FaceDescriptor": "fas fa-id-card",
+        "accounts.PendingUser": "fas fa-user-clock",
+        
+        # Workshops
+        "employees": "fas fa-industry",
+        "employees.Workshop": "fas fa-building",
+        "employees.Leave": "fas fa-calendar-minus",
+        
+        # Operations
+        "operations": "fas fa-cogs",
+        "operations.Operation": "fas fa-tasks",
+        "operations.Rate": "fas fa-dollar-sign",
+        
+        # Overtime
+        "overtime": "fas fa-business-time",
+        "overtime.OvertimeRequest": "fas fa-clock",
+        
+        # Payrolls
+        "payrolls": "fas fa-money-check-alt",
+        "payrolls.Payroll": "fas fa-money-bill-wave",
+        
+        # Reports
+        "reports": "fas fa-chart-bar",
+        "reports.Report": "fas fa-file-alt",
+        
+        # Auth and Security
+        "auth": "fas fa-shield-alt",
+        "auth.Group": "fas fa-users",
+        "otp_totp": "fas fa-lock",
+        "otp_totp.TOTPDevice": "fas fa-mobile-alt",
+        
+        # Notifications
+        "notifications": "fas fa-bell"
+    },
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-file",
+    "related_modal_active": True,
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": True,
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "accounts.CustomUser": "collapsible",
+        "employees.Employee": "horizontal_tabs",
+        "payrolls.Payroll": "vertical_tabs"
+    }
+}
+
+# Additional Jazzmin UI customization
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": True,
+    "footer_small_text": True,
+    "body_small_text": True,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": True,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": True,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
