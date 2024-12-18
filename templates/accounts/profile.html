@@ -7,7 +7,7 @@
             <!-- Left Sidebar -->
             <div class="space-y-6 lg:col-span-1">
                 <!-- Profile Card -->
-                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-800">
+                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-700">
                     <div class="relative p-6 pt-12">
                         <!-- Role Badge -->
                         <div class="absolute start-4 top-4">
@@ -182,7 +182,7 @@
             <!-- Right Content Area -->
             <div class="space-y-6 lg:col-span-2">
                 <!-- Security Settings Card -->
-                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-800">
+                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-700">
                     <div class="p-6">
                         <h3 class="mb-6 text-lg font-bold text-slate-900 dark:text-white">Security Settings</h3>
                         <div class="space-y-6">
@@ -295,7 +295,7 @@
                     </div>
                 </div>
                 <!-- Activity Logs Section -->
-                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-800"
+                <div class="overflow-hidden bg-white border rounded-lg shadow-lg border-slate-200 dark:border-slate-800 dark:bg-slate-700"
                      x-data="{ activeTab: 'activities', searchQuery: '', currentPage: {{ page_obj.number }}, filteredLogs() { if (!this.searchQuery) return [...this.$refs.logsContainer.children]; return [...this.$refs.logsContainer.children].filter(row => { const cells = [...row.children]; return cells.some(cell => cell.textContent.toLowerCase().includes(this.searchQuery.toLowerCase()) ); }); }, async fetchPage() { const response = await fetch(`?page=${this.currentPage}&tab=${this.activeTab}`); const html = await response.text(); const parser = new DOMParser(); const doc = parser.parseFromString(html, 'text/html'); const newContent = doc.querySelector('#activity-logs-content'); this.$refs.logsContainer.innerHTML = newContent.innerHTML; } }">
                     <div class="border-b border-slate-200 dark:border-slate-700">
                         <div class="flex gap-2 px-1">

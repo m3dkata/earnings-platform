@@ -2,45 +2,45 @@
 {% load static %}
 
 {% block content %}
-<div class="p-2 sm:p-4 max-w-full mx-auto">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+<div class="max-w-full p-2 mx-auto sm:p-4">
+    <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-3">
         <!-- Total Operations Card -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+        <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Executed Operations</p>
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_operations }}</h3>
                 </div>
-                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <i class="fa-solid fa-clipboard-list text-purple-500 dark:text-purple-300"></i>
+                <div class="p-2 bg-purple-100 rounded-lg dark:bg-purple-900">
+                    <i class="text-purple-500 fa-solid fa-clipboard-list dark:text-purple-300"></i>
                 </div>
             </div>
         </div>
 
         <!-- Total Reports Card -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
+        <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Total Reports</p>
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-white">{{ total_reports }}</h3>
                 </div>
-                <div class="p-2 bg-lime-100 dark:bg-lime-900 rounded-lg">
+                <div class="p-2 rounded-lg bg-lime-100 dark:bg-lime-900">
                     <i class="fa-solid fa-file-lines text-lime-500 dark:text-lime-300"></i>
                 </div>
             </div>
         </div>
         {% if request.user.is_staff %}
         <!-- Combined Filters Card -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
-            <form method="get" class="h-full flex flex-col gap-2">
-                <select name="employee" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+        <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+            <form method="get" class="flex flex-col h-full gap-2">
+                <select name="employee" class="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white" onchange="this.form.submit()">
                     {% for emp in employees %}
                         <option value="{{ emp.id }}" {% if emp.id == selected_employee.id %}selected{% endif %}>
                             {{ emp.user.get_full_name }}
                         </option>
                     {% endfor %}
                 </select>
-                <select name="period" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+                <select name="period" class="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white" onchange="this.form.submit()">
                     <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 Days</option>
                     <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 Days</option>
                     <option value="year" {% if period == 'year' %}selected{% endif %}>Last Year</option>
@@ -49,9 +49,9 @@
         </div>
         {% else %}
         <!-- Period Filter Only -->
-        <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
-            <form method="get" class="h-full flex items-center">
-                <select name="period" class="w-full bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-800 dark:text-white p-2" onchange="this.form.submit()">
+        <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+            <form method="get" class="flex items-center h-full">
+                <select name="period" class="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white" onchange="this.form.submit()">
                     <option value="week" {% if period == 'week' %}selected{% endif %}>Last 7 Days</option>
                     <option value="month" {% if period == 'month' %}selected{% endif %}>Last 30 Days</option>
                     <option value="year" {% if period == 'year' %}selected{% endif %}>Last Year</option>
@@ -62,23 +62,23 @@
     </div>
     
     <!-- Charts -->
-    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 mb-4">
-        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Operations Over Time</h3>
-        <div id="operations-chart" class="h-80 w-full"></div>
+    <div class="p-4 mb-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+        <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">Operations Over Time</h3>
+        <div id="operations-chart" class="w-full h-80"></div>
     </div>
 
     <!-- Operations Table -->
-    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4 mb-4">
-        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">All Operations</h3>
+    <div class="p-4 mb-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+        <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">All Operations</h3>
         <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead>
                     <tr>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Code</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Name</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Q-ty</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Percent</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Sum</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Code</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Name</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Q-ty</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Percent</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Sum</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
@@ -97,17 +97,17 @@
     </div>
 
     <!-- Reports Table -->
-    <div class="bg-slate-50 dark:bg-slate-700 rounded-lg shadow-xl hover:shadow-2xl p-4">
-        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">All Reports</h3>
+    <div class="p-4 rounded-lg shadow-xl bg-slate-50 dark:bg-slate-700 hover:shadow-2xl">
+        <h3 class="mb-4 text-lg font-semibold text-slate-800 dark:text-white">All Reports</h3>
         <div class="overflow-x-auto max-h-[350px] overflow-y-auto">
             <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead>
                     <tr>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">#</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Date</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Status</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Percent</th>
-                        <th class="px-1 py-1 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Sum</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">#</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Date</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Status</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Percent</th>
+                        <th class="px-1 py-1 text-xs font-medium text-left uppercase text-slate-500 dark:text-slate-400">Sum</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 dark:divide-slate-700">

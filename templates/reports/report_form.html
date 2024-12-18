@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="p-2 mx-auto sm:p-4 max-w-7xl">
-    <form method="post" class="p-4 rounded-lg shadow-2xl bg-slate-100 dark:bg-slate-700">
+    <form method="post" class="p-4 rounded-lg shadow-2xl bg-white dark:bg-slate-700">
         {% csrf_token %}
         {% if object.status == 'APPROVED' %}
         <div class="flex justify-center">

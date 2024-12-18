@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="max-w-2xl p-4 mx-auto">
-    <form method="post" class="p-6 space-y-4 rounded-lg shadow-xl bg-slate-100 dark:bg-slate-800">
+    <form method="post" class="p-6 space-y-4 rounded-lg shadow-xl bg-white dark:bg-slate-800">
         {% csrf_token %}
         {% for field in form %}
         <div class="space-y-2">
