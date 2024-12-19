@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.db import models
 from django.db.models import Avg, Sum, Count
 from apps.employees.models import Employee
+from apps.overtime.models import OvertimeRequest
 from apps.reports.models import Report
 
 
@@ -22,6 +23,25 @@ class Payroll(models.Model):
     bank_transfer = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     cash_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    @property
+    def overtime_hours(self):
+        return OvertimeRequest.objects.filter(
+            employee=self.employee,
+            status='approved',
+            date__year=self.month.year,
+            date__month=self.month.month
+        ).aggregate(total_hours=Sum('hours'))['total_hours'] or 0
+    
+    @property
+    def overtime_amount(self):
+        overtime_requests = OvertimeRequest.objects.filter(
+            employee=self.employee,
+            status='approved',
+            date__year=self.month.year,
+            date__month=self.month.month
+        )
+        return sum(request.calculate_amount() for request in overtime_requests)
+    
     def calculate_from_reports(self):
         reports = Report.objects.filter(
             employee=self.employee,
@@ -51,6 +71,7 @@ class Payroll(models.Model):
             + self.attendance_bonus
             + self.vacation_amount
             + self.sick_amount
+            + self.overtime_amount
         )
         self.cash_payment = self.total - self.bank_transfer
 

@@ -84,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         notificationItem.dataset.reportUrl = `/reports/${notification.report}/update/`;
                     } else if (notification.notification_type === 'registration') {
                         notificationItem.dataset.registrationUrl = '/employees/inactive/';
+                    } else if (notification.notification_type === 'overtime_request' || 
+                        notification.notification_type === 'overtime_status') {
+                        notificationItem.dataset.overtimeUrl = '/overtime/';
                     }
                 
                     notificationItem.innerHTML = createNotificationHTML(notification, csrfToken);
@@ -109,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = item.dataset.registrationUrl;
                     } else if (type === 'leave_status') {
                         window.location.href = item.dataset.leaveUrl;
+                    } else if (type === 'overtime_request' || type === 'overtime_status') {
+                        window.location.href = item.dataset.overtimeUrl;
                     }
                 }
             });

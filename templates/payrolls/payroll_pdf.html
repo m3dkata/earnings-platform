@@ -141,6 +141,12 @@
             <td>Vacation ({{ payroll.vacation_days }} days)</td>
             <td>${{ payroll.vacation_amount }}</td>
         </tr>
+        <tr>
+            <td>Overtime hours</td>
+            <td>{{ payroll.overtime_hours }}</td>
+            <td>Overtime amount</td>
+            <td>${{ payroll.overtime_amount|floatformat:2 }}</td>
+        </tr>
     </table>
 
     <div class="totals">

@@ -120,6 +120,14 @@
                                     <p class="font-medium text-gray-900 dark:text-white">{{ payroll.sick_days }}</p>
                                 </div>
                                 <div>
+                                    <p class="text-slate-500 dark:text-slate-400">Overtime Hours</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.overtime_hours }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400">Overtime Amount</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ payroll.overtime_amount|floatformat:2 }}</p>
+                                </div>
+                                <div>
                                     <p class="text-slate-500 dark:text-slate-400">Bank Transfer</p>
                                     <p class="font-medium text-gray-900 dark:text-white">{{ payroll.bank_transfer }}</p>
                                 </div>
