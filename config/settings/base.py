@@ -24,7 +24,10 @@ INTERNAL_IPS = env.list('INTERNAL_IPS')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-
+if os.name == 'nt':
+    NPM_BIN_PATH = r"C:\\Program Files\\nodejs\\npm.cmd"
+else:
+    NPM_BIN_PATH = 'npm'
 # Tailwind App Name
 TAILWIND_APP_NAME='theme'
 
@@ -60,6 +63,7 @@ INSTALLED_APPS = [
     'django_htmx',
     "corsheaders",
     'import_export',
+    'django_browser_reload',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +79,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     "corsheaders.middleware.CorsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 if env('BUILD_ENVIRONMENT') == 'development':
@@ -217,7 +222,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'EET'
+TIME_ZONE = 'Europe/Sofia'
 USE_I18N = True
 USE_TZ = True
 
