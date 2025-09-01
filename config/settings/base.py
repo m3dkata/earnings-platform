@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'django_htmx',
     "corsheaders",
     'import_export',
-    'django_browser_reload',
+    # 'django_browser_reload',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +79,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 if env('BUILD_ENVIRONMENT') == 'development':
